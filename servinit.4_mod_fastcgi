@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Install mod_fastcgi
+sudo aptitude install libapache2-mod-fastcgi
+
+echo >> /etc/sources.list
+echo " deb http://archive.ubuntu.com/ubuntu/ lucid main restricted multiverse" >> /etc/sources.list
+echo "deb-src http://archive.ubuntu.com/ubuntu lucid main restricted multiverse" >> /etc/sources.list
+
+echo "# FastCGI" >> /etc/apache2/apache2.conf
+echo >> /etc/apache2/apache2.conf
+echo "LoadModule fastcgi_module libexec/mod_fastcgi.so" >> /etc/apache2/apache2.conf
+echo "<IfModule mod_fastcgi.c>" >> /etc/apache2/apache2.conf
+echo "FastCgiExternalServer /tmp/myapp.fcgi -host myhost:8081" >> /etc/apache2/apache2.conf
+echo "Alias /myapp/    /tmp/myapp.fcgi/" >> /etc/apache2/apache2.conf
+echo "</IfModule>" >> /etc/apache2/apache2.conf
+
+
