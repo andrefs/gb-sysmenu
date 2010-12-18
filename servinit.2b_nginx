@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Install nginx
+sudo aptitude install nginx
+
+# Init nginx
+sudo /etc/init.d/nginx start
+
+# Test
+w3m http://localhost
+w3m http://$(hostname -I)
+
+echo
+echo "Finished installing nginx."
