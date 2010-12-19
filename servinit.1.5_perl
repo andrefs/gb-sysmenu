@@ -1,0 +1,16 @@
+#!/bin/bash
+
+
+
+# Install perl modules via CPAN
+sudo cpan LWP YAML CPAN::SQLite 
+
+# Install perl modules via aptitude (these were all installed *not automatically* in my laptop)
+libapparmor-perl libcairo-perl libcatalyst-modules-extra-perl libcatalyst-modules-perl libcatalyst-perl libclass-accessor-perl libconfig-general-perl libcpan-mini-perl libdatetime-format-sqlite-perl libdbd-sqlite3-perl libdbix-class-timestamp-perl libdevel-repl-perl libfile-copy-recursive-perl libfont-afm-perl libfreezethaw-perl libglib-perl libgnome2-canvas-perl libgnome2-perl libgnome2-vfs-perl libgraph-writer-graphviz-perl libgtk2-perl libhtml-format-perl libhtml-formfu-model-dbic-perl libhtml-parser-perl libhtml-tagset-perl libhtml-tree-perl libinline-perl libio-string-perl liblocale-gettext-perl libmailtools-perl libmldbm-perl libmodule-starter-perl libnet-dbus-perl libpango-perl libparse-debianchangelog-perl libperl-critic-perl libperl5.10 libperl6-junction-perl libroman-perl libsub-name-perl libterm-readline-perl-perl libtest-pod-coverage-perl libtext-charwidth-perl libtext-iconv-perl libtext-wrapi18n-perl libtheschwartz-perl libtie-ixhash-perl libtimedate-perl liburi-perl libuuid-perl libwww-perl libxml-libxml-perl libxml-namespacesupport-perl libxml-parser-perl libxml-sax-expat-perl libxml-sax-perl libxml-twig-perl libxml-xpath-perl libyaml-appconfig-perl
+
+# Install perl modules via aptitude
+sudo aptitude install libdevel-repl-perl libyaml-perl libhttp-server-simple-perl libdbd-sqlite3-perl libcpan-distnameinfo-perl  libhttp-server-simple-psgi-perl libtest-tester-perl libmime-types-perl  libtest-deep-perl libhttp-body-perl libextutils-parsexs-perl libmodule-build-perl libextutils-cbuilder-perl libyaml-tiny-perl libsoftware-license-perl
+
+# More perl modules, but now with App::cpanminus
+sudo cpan App::cpanminus
+sudo cpanm Data::Dumper

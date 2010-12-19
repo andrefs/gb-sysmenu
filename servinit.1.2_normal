@@ -8,4 +8,4 @@ sudo passwd -l root
 echo
 sudo aptitude update
 sudo aptitude safe-upgrade
-sudo aptitude install subversion subversion-tools git-core w3m 
+sudo aptitude install subversion subversion-tools git-core w3m  mlocate sqlite3 screen gcc build-essential

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Install apache2
+echo
+sudo aptitude install apache2
+w3m http://localhost
+w3m http://$(hostname -I)
+echo
+echo "Apache 2 server installed!"
+echo
+
