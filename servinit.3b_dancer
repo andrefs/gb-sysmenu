@@ -1,9 +1,0 @@
-#!/bin/bash
-
-# Install dancer
-echo
-sudo cpanm Dancer
-echo
-echo "Dancer installed!"
-echo
-
