@@ -1,6 +1,0 @@
-#!/bin/bash
-
-# Install nginx
-sudo aptitude install nginx
-w3m http://localhost
-w3m http://$(hostname -I)

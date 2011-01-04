@@ -8,7 +8,8 @@ echo "export EDITOR=vim" >> /root/.bashrc
 source .bashrc
 
 # Create non root user
-adduser andrefs
+read -p "Creating non-root user. Please enter username: " -e UN
+adduser $UN
 
 # Activate bash completion (if not working)
 echo
@@ -21,11 +22,11 @@ read
 vim -O /root/.bashrc /etc/bash.bashrc
 
 #Allow user to make sudo (!= from being root!!!)
-echo "andrefs ALL=(ALL) ALL" >> /etc/sudoers
+echo "$UN ALL=(ALL) ALL" >> /etc/sudoers
 
 #mv -p servinit.{2,3,4,5} /home/andrefs/
 #chown andrefs:andrefs /home/andrefs/servinit.{2,3,4,5}
 
 echo
-echo "Please log back in as andrefs"
+echo "Please log back in as $UN"
 exit

@@ -1,11 +1,9 @@
 #!/bin/bash
 
-# Install apache2
+# Install dancer
 echo
-sudo aptitude install apache2
-w3m http://localhost
-w3m http://$(hostname -I)
+sudo cpanm Dancer
 echo
-echo "Apache 2 server installed!"
+echo "Dancer installed!"
 echo
 
