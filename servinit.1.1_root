@@ -5,7 +5,7 @@ echo
 # Set vim as the default editor at root level
 echo >> /root/.bashrc
 echo "export EDITOR=vim" >> /root/.bashrc
-source .bashrc
+source /root/.bashrc
 
 # Create non root user
 read -p "Creating non-root user. Please enter username: " -e UN
