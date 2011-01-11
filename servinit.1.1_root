@@ -33,5 +33,5 @@ echo "$UN ALL=(ALL) ALL" >> /etc/sudoers
 #chown andrefs:andrefs /home/andrefs/servinit.{2,3,4,5}
 
 echo
-echo "Please log back in as $UN"
+echo "Done. Please log back in as $UN"
 exit

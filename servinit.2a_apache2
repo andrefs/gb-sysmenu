@@ -4,15 +4,15 @@
 
 # Configure iptables
 #sudo /sbin/iptables -L
-read -p "Do you want to configure your iptables? [Y/n]" -e ANS
-if [[ -n "$ANS" || $ANS=='y' || $ANS=='Y']];
-	then do
+while [ -n "$ANS" ]; do
+	read -p "Do you want to automatically configure your iptables? [y/n]" -e ANS
+	if [[ "$ANS" == 'y' || "$ANS" == 'Y']]; then
 		sudo /sbin/iptables -I INPUT -p tcp --dport 80 -m state --state NEW,ESTABLISHED -j ACCEPT;
 		sudo /sbin/iptables -I OUTPUT -p tcp --sport 80 -m state --state ESTABLISHED -j ACCEPT;
 		sudo /sbin/iptables -I INPUT -p tcp --dport 443 -m state --state NEW,ESTABLISHED -j ACCEPT;
 		sudo /sbin/iptables -I OUTPUT -p tcp --sport 443 -m state --state ESTABLISHED -j ACCEPT;
-	done;
-fi
+	fi
+done
 
 # Install apache2
 sudo aptitude update
@@ -30,9 +30,12 @@ sudo /usr/sbin/apache2ctl graceful
 # Test with w3m
 echo
 echo "Apache2 server should now be working. Testing with w3m."
-w3m http://$(hostname -I)
-echo
-echo "Apache 2 server installed!"
+wget http://$(hostname -I)
+if [ $? -eq 0 ]; then
+	echo "Well done, Apache 2 server installed!"
+else
+	echo "Oh snap, something went wrong!"
+fi
 
 # MPM
 echo 

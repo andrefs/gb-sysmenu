@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Deactivate root account (andrefs can still run `sudo -s`)
-echo
+echo "Deactivating root account."
 sudo passwd -l root
 
 # Install tools
@@ -9,3 +9,5 @@ echo
 sudo aptitude update
 sudo aptitude safe-upgrade
 sudo aptitude install subversion subversion-tools git-core w3m  mlocate sqlite3 screen gcc build-essential
+
+echo -e "\nDone."
