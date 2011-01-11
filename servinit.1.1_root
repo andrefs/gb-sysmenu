@@ -17,9 +17,14 @@ apt-get install aptitude
 aptitude install bash-completion
 dpkg-reconfigure bash-completion
 echo
-echo "Uncomment bash_completion block on /root/.bashrc and /etc/bash.bashrc [Ok]"
-read
-vim -O /root/.bashrc /etc/bash.bashrc
+
+while [ -z "$UNC" ]; do
+	read -p "Uncomment bash_completion block on /root/.bashrc and /etc/bash.bashrc [y/n] " -e UNC
+ 	if [ "$UNC" == 'y' ]; then
+ 		vim /root/.bashrc
+ 		vim /etc/bash.bashrc
+ 	fi
+done
 
 #Allow user to make sudo (!= from being root!!!)
 echo "$UN ALL=(ALL) ALL" >> /etc/sudoers
