@@ -27,9 +27,9 @@ sudo echo "ServerName $SN" /etc/apache2/conf.d/servername.conf
 # Graceful restart
 sudo /usr/sbin/apache2ctl graceful
 
-# Test with w3m
+# Test with wget
 echo
-echo "Apache2 server should now be working. Testing with w3m."
+echo "Apache2 server should now be working. Testing with wget."
 wget http://$(hostname -I)
 if [ $? -eq 0 ]; then
 	echo "Well done, Apache 2 server installed!"
