@@ -1,37 +1,87 @@
 #!/bin/bash
 
-echo
+echo "
+This script does several initial server configurations.
+
+It will login in a server using the root account, configure
+the ssh keys, create a regular user account, add it to the
+sudoers file and deactivate the root account. 
+"
+
+read -p "Do you wish to proceed? [Y/n] " -e PROC
+if [ "$PROC" == "n" ]; then
+	echo -e "\nScript execution canceled."
+	exit 1
+fi
+
+read -p "What is the address of the server you wish to configure? " -e ADDR
+read -p "Enter a new username for the regular account: " -e UN
+GO=0
+while [ $GO -ne 1 ]; do
+	echo
+	read -p "Enter new UNIX password: " -s -e PASS
+	echo
+	read -p "Retype new UNIX password: " -s -e PASSCONF
+	echo
+	# echo $PASS
+	# echo $PASSCONF
+	if [ "$PASS" == "$PASSCONF" ]; then
+		GO=1
+		if [ -z "$PASS" ]; then
+			echo "No password supplied."
+			GO=0	
+		fi
+ 	else
+ 		echo "Sorry, passwords do not match."
+		GO=0
+ 	fi
+done
+echo -e "\nPlease provide information for the new user $UN."
+INFO="n"
+#while [[ "$INFO" != 'y'  && "$INFO" != 'Y' && -n "$INFO" ]]; do
+while [[ "$INFO" == 'n'  || "$INFO" == 'N' ]]; do
+	echo "Enter the desired value, or press ENTER for the default"
+	read -p "	Full Name []: " -e $FN
+	read -p "	Room Number []: " -e $RN
+	read -p "	Work Phone []: " -e $WP
+	read -p "	Home Phone []: " -e $HP
+	read -p "	Other []: " -e $OT
+	read -p "Is the information correct? [Y/n] " -e INFO
+done
+
+echo "Connecting to ssh root@$ADDR"
+ssh root@$ADDR <<SIEND1
+export TERM="xterm"
 
 # Set vim as the default editor at root level
 echo >> /root/.bashrc
 echo "export EDITOR=vim" >> /root/.bashrc
-source /root/.bashrc
+# source /root/.bashrc
 
 # Create non root user
-read -p "Creating non-root user. Please enter username: " -e UN
-adduser $UN
+echo -e "$PASS\n$PASS\n$FN\n$RN\n$WP\n$HP\n$OT\ny\n" | adduser $UN 
 
 # Activate bash completion (if not working)
-echo
 apt-get install aptitude
 aptitude install bash-completion
 dpkg-reconfigure bash-completion
-echo
 
-while [ -z "$UNC" ]; do
-	read -p "Uncomment bash_completion block on /root/.bashrc and /etc/bash.bashrc [y/n] " -e UNC
- 	if [ "$UNC" == 'y' ]; then
- 		vim /root/.bashrc
- 		vim /etc/bash.bashrc
- 	fi
-done
+cp /root/.bashrc /root/.bashrc.bak
+cp /etc/bash.bashrc /etc/bash.bashrc.bak
+
+# enable programmable completion features
+echo -e "\n\n# enable programmable completion features\nif [ -f /etc/bash_completion ] && ! shopt -oq posix; then\n    . /etc/bash_completion\nfi\n" >> /root/.bashrc.bak
+
+# enable bash completion in interactive shells
+echo -e "\n\n# enable bash completion in interactive shells\nif [ -f /etc/bash_completion ] && ! shopt -oq posix; then\n    . /etc/bash_completion\nfi\n" >> /etc/bash.bashrc
 
 #Allow user to make sudo (!= from being root!!!)
 echo "$UN ALL=(ALL) ALL" >> /etc/sudoers
+SIEND1
 
-#mv -p servinit.{2,3,4,5} /home/andrefs/
-#chown andrefs:andrefs /home/andrefs/servinit.{2,3,4,5}
-
-echo
-echo "Done. Please log back in as $UN"
-exit
+echo -e "
+Done. You should now be able to login in $ADDR with 
+user $UN by running \`ssh $UN@$ADDR\` (if you
+chose to configure your ssh keys you should not need
+a password).
+"
