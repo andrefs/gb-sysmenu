@@ -49,6 +49,29 @@ while [[ "$INFO" == 'n'  || "$INFO" == 'N' ]]; do
 	read -p "Is the information correct? [Y/n] " -e INFO
 done
 
+echo 
+read -p "Now, do you wish to use SSH keys to access the server? [Y/n] "
+if [[ "$REPLY" != "n" && "$REPLY" != "N" ]]; then
+	SSHPATH="$HOME/.ssh/id_rsa.pub"
+	read -p "Do you already have your own keys? (if not, new ones will be generated) [Y/n] "
+	if [[ "$REPLY" != "n" && "$REPLY" != "N" ]]; then
+		read -p "Please enter the path to your public key [$HOME/.ssh/id_rsa.pub] " -e SSHPATH
+		if [ -z "$SSHPATH" ]; then
+			SSHPATH="$HOME/.ssh/id_rsa.pub"
+		fi
+		while [ ! -e "$SSHPATH" ]; do
+			read -p "Can't find file '$SSHPATH'. Please enter the path to your public key. " -e SSHPATH
+		done
+	else
+		echo "Generating ssh keys."
+		mkdir -p $HOME/.ssh
+		ssh-keygen -t rsa
+	fi
+fi
+
+
+echo "Copying public key to rott@$ADDR"
+scp "$SSHPATH" root@$ADDR:id_rsa.pub
 echo "Connecting to ssh root@$ADDR"
 ssh root@$ADDR <<SIEND1
 export TERM="xterm"
@@ -60,6 +83,15 @@ echo "export EDITOR=vim" >> /root/.bashrc
 
 # Create non root user
 echo -e "$PASS\n$PASS\n$FN\n$RN\n$WP\n$HP\n$OT\ny\n" | adduser $UN 
+
+if [ -e id_rsa.pub ]; then
+	mkdir -p /home/$UN/.ssh/
+	cat id_rsa.pub >> /home/$UN/.ssh/authorized_keys
+	rm id_rsa.pub
+	chown -R $UN:$UN /home/$UN/.ssh
+	chmod 700 /home/$UN/.ssh
+	chmod 600 /home/$UN/.ssh/authorized_keys
+fi
 
 # Activate bash completion (if not working)
 apt-get install aptitude
