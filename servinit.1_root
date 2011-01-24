@@ -1,0 +1,296 @@
+#!/bin/bash
+
+set -e # Exit if any simple command fails
+
+echo "
+This script does several initial server configurations.
+
+It will login in a server using the root account, configure
+the ssh keys, create a regular user account, add it to the
+sudoers file and deactivate the root account. 
+"
+
+read -p "Do you wish to proceed? [Y/n] " -e PROC
+if [ "$PROC" == "n" ]; then
+	echo -e "\nScript execution canceled."
+	exit 1
+fi
+
+read -p "What is the address of the server you wish to configure? " -e ADDR
+read -p "Enter a new username for the regular account: " -e UN
+while [ -z "$UN" ]; do
+	read -p "Empty username. Please enter a valid username: " -e UN
+done
+
+GO=0
+while [ $GO -ne 1 ]; do
+	echo
+	read -p "Enter new UNIX password: " -s -e PASS
+	echo
+	read -p "Retype new UNIX password: " -s -e PASSCONF
+	echo
+	# echo $PASS
+	# echo $PASSCONF
+	if [ "$PASS" == "$PASSCONF" ]; then
+		GO=1
+		if [ -z "$PASS" ]; then
+			echo "No password supplied."
+			GO=0	
+		fi
+ 	else
+ 		echo "Sorry, passwords do not match."
+		GO=0
+ 	fi
+done
+echo -e "\nPlease provide information for the new user $UN."
+INFO="n"
+#while [[ "$INFO" != 'y'  && "$INFO" != 'Y' && -n "$INFO" ]]; do
+while [[ "$INFO" == 'n'  || "$INFO" == 'N' ]]; do
+	echo "Enter the desired value, or press ENTER for the default"
+	read -p "	Full Name []: " -e $FN
+	read -p "	Room Number []: " -e $RN
+	read -p "	Work Phone []: " -e $WP
+	read -p "	Home Phone []: " -e $HP
+	read -p "	Other []: " -e $OT
+	read -p "Is the information correct? [Y/n] " -e INFO
+done
+
+echo 
+read -p "Now, do you wish to use SSH keys to access the server? [Y/n] "
+if [[ "$REPLY" != "n" && "$REPLY" != "N" ]]; then
+	SSHPATH="$HOME/.ssh/id_rsa.pub"
+	read -p "Do you already have your own keys? (if not, new ones will be generated) [Y/n] "
+	if [[ "$REPLY" != "n" && "$REPLY" != "N" ]]; then
+		read -p "Please enter the path to your public key [$HOME/.ssh/id_rsa.pub] " -e SSHPATH
+		if [ -z "$SSHPATH" ]; then
+			SSHPATH="$HOME/.ssh/id_rsa.pub"
+		fi
+		while [ ! -e "$SSHPATH" ]; do
+			read -p "Can't find file '$SSHPATH'. Please enter the path to your public key. " -e SSHPATH
+		done
+	else
+		echo "Generating ssh keys."
+		mkdir -p $HOME/.ssh
+		ssh-keygen -t rsa
+	fi
+fi
+
+read -p "Please choose the SSH port number: [30022] " -e SSHPN
+if [ -z "$SSHPN" ]; then
+	SSHPN=30022
+fi
+
+
+echo "Copying public key to root@$ADDR"
+scp "$SSHPATH" root@$ADDR:id_rsa.pub
+echo -e "\nConnecting to ssh root@$ADDR"
+ssh root@$ADDR <<SIEND1
+export TERM="xterm"
+
+# Set vim as the default editor at root level
+echo >> /root/.bashrc
+echo "export EDITOR=vim" >> /root/.bashrc
+# source /root/.bashrc
+
+# Create non root user
+echo -e "$PASS\n$PASS\n$FN\n$RN\n$WP\n$HP\n$OT\ny\n" | adduser $UN 
+
+if [ -e id_rsa.pub ]; then
+	mkdir -p /home/$UN/.ssh/
+	cat id_rsa.pub >> /home/$UN/.ssh/authorized_keys
+	rm id_rsa.pub
+	chown -R $UN:$UN /home/$UN/.ssh
+	chmod 700 /home/$UN/.ssh
+	chmod 600 /home/$UN/.ssh/authorized_keys
+fi
+
+# Activate bash completion (if not working)
+apt-get install aptitude
+aptitude install bash-completion
+dpkg-reconfigure bash-completion
+
+cp /root/.bashrc /root/.bashrc.bak
+cp /etc/bash.bashrc /etc/bash.bashrc.bak
+
+# enable programmable completion features
+echo -e "\n\n# enable programmable completion features\nif [ -f /etc/bash_completion ] && ! shopt -oq posix; then\n    . /etc/bash_completion\nfi\n" >> /root/.bashrc.bak
+
+# enable bash completion in interactive shells
+echo -e "\n\n# enable bash completion in interactive shells\nif [ -f /etc/bash_completion ] && ! shopt -oq posix; then\n    . /etc/bash_completion\nfi\n" >> /etc/bash.bashrc
+
+#Allow user to make sudo (!= from being root!!!)
+echo "$UN ALL=(ALL) ALL" >> /etc/sudoers
+
+# SSH configuration (IMPORTANT: Port = $SSHPN)
+mv /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
+
+# echo "# Package generated configuration file
+# # See the sshd_config(5) manpage for details
+# # Modified by Slicehost
+# 
+# # What ports, IPs and protocols we listen for
+# Port $SSHPN
+# # Use these options to restrict which interfaces/protocols sshd will bind to
+# #ListenAddress ::
+# #ListenAddress 0.0.0.0
+# Protocol 2
+# # HostKeys for protocol version 2
+# HostKey /etc/ssh/ssh_host_rsa_key
+# HostKey /etc/ssh/ssh_host_dsa_key
+# #Privilege Separation is turned on for security
+# UsePrivilegeSeparation yes
+# 
+# # Lifetime and size of ephemeral version 1 server key
+# KeyRegenerationInterval 3600
+# ServerKeyBits 768
+# 
+# # Logging
+# SyslogFacility AUTH
+# LogLevel INFO
+# 
+# # Authentication:
+# LoginGraceTime 120
+# PermitRootLogin no
+# StrictModes yes
+# 
+# RSAAuthentication yes
+# PubkeyAuthentication yes
+# #AuthorizedKeysFile	%h/.ssh/authorized_keys
+# 
+# # Don't read the user's ~/.rhosts and ~/.shosts files
+# IgnoreRhosts yes
+# # For this to work you will also need host keys in /etc/ssh_known_hosts
+# RhostsRSAAuthentication no
+# # similar for protocol version 2
+# HostbasedAuthentication no
+# # Uncomment if you don't trust ~/.ssh/known_hosts for RhostsRSAAuthentication
+# #IgnoreUserKnownHosts yes
+# 
+# # To enable empty passwords, change to yes (NOT RECOMMENDED)
+# PermitEmptyPasswords no
+# 
+# # Change to yes to enable challenge-response passwords (beware issues with
+# # some PAM modules and threads)
+# ChallengeResponseAuthentication no
+# 
+# # Change to no to disable tunnelled clear text passwords
+# PasswordAuthentication no
+# 
+# # Kerberos options
+# #KerberosAuthentication no
+# #KerberosGetAFSToken no
+# #KerberosOrLocalPasswd yes
+# #KerberosTicketCleanup yes
+# 
+# # GSSAPI options
+# #GSSAPIAuthentication no
+# #GSSAPICleanupCredentials yes
+# 
+# X11Forwarding no
+# X11DisplayOffset 10
+# PrintMotd no
+# PrintLastLog yes
+# TCPKeepAlive yes
+# #UseLogin no
+# 
+# #MaxStartups 10:30:60
+# #Banner /etc/issue.net
+# 
+# # Allow client to pass locale environment variables
+# AcceptEnv LANG LC_*
+# 
+# Subsystem sftp /usr/lib/openssh/sftp-server
+# 
+# # Set this to 'yes' to enable PAM authentication, account processing,
+# # and session processing. If this is enabled, PAM authentication will
+# # be allowed through the ChallengeResponseAuthentication and
+# # PasswordAuthentication.  Depending on your PAM configuration,
+# # PAM authentication via ChallengeResponseAuthentication may bypass
+# # the setting of "PermitRootLogin without-password".
+# # If you just want the PAM account and session checks to run without
+# # PAM authentication, then enable this but set PasswordAuthentication
+# # and ChallengeResponseAuthentication to 'no'.
+# UsePAM yes
+# 
+# UseDNS no
+# 
+# AllowUsers $UN
+# " > /etc/ssh/sshd_config
+
+
+# IPTables configuration (IMPORTANT: SSH Port = $SSHPN)
+
+# echo "
+# *filter
+# 
+# 
+# #  Allows all loopback (lo0) traffic and drop all traffic to 127/8 that doesn't use lo0
+# -A INPUT -i lo -j ACCEPT
+# -A INPUT ! -i lo -d 127.0.0.0/8 -j REJECT
+# 
+# 
+# #  Accepts all established inbound connections
+# -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+# 
+# 
+# #  Allows all outbound traffic
+# #  You can modify this to only allow certain traffic
+# -A OUTPUT -j ACCEPT
+# 
+# 
+# # Allows HTTP and HTTPS connections from anywhere (the normal ports for websites)
+# -A INPUT -p tcp --dport 80 -j ACCEPT
+# -A INPUT -p tcp --dport 443 -j ACCEPT
+# 
+# 
+# #  Allows SSH connections
+# #
+# # THE -dport NUMBER IS THE SAME ONE YOU SET UP IN THE SSHD_CONFIG FILE
+# #
+# -A INPUT -p tcp -m state --state NEW --dport $SSHPN -j ACCEPT
+# 
+# 
+# # Allow ping
+# -A INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT
+# 
+# 
+# # log iptables denied calls
+# -A INPUT -m limit --limit 5/min -j LOG --log-prefix "iptables denied: " --log-level 7
+# 
+# 
+# # Reject all other inbound - default deny unless explicitly allowed policy
+# -A INPUT -j REJECT
+# -A FORWARD -j REJECT
+# 
+# COMMIT
+# " >> /etc/iptables.up.rules
+
+# mv /etc/network/interfaces /etc/network/interfaces.bak
+# sed "s/iface lo inet loopback/iface lo inet loopback\nre-up iptables-restore < \/etc\/iptables.up.rules/" /etc/network/interfaces.bak > /etc/network/interfaces
+
+sudo aptitude update -y
+sudo aptitude safe-upgrade -y
+sudo aptitude install subversion subversion-tools git-core w3m  mlocate sqlite3 screen gcc build-essential -y
+SIEND1
+
+read -p "Do you want to install utils-menu on your server? [y/N] " -e UTILS
+if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
+	UTILS="git clone git://github.com/regedor/Utils-menu.git ~/.utils-menu
+	chmod +x ~/.utils-menu/install.sh
+	~/.utils-menu/install.sh"
+fi
+
+echo -e "\nConnecting to ssh $UN@$ADDR to deactivate root account."
+ssh $UN@$ADDR <<SIEND2
+# Deactivate root account ($UN can still run 'sudo -s')
+echo $PASS | sudo -S passwd -l root
+$UTILS
+git clone git://github.com/andrefs/servinit.git ~/.servinit
+cd ~/.servinit
+for i in \$(ls .); do echo $PASS | sudo -S ln -s -f \$(pwd)/\$i /usr/local/bin/\$i ; done
+SIEND2
+
+echo -e "
+Done. You should now be able to login in $ADDR with 
+user $UN by running \`ssh $UN@$ADDR\`
+"

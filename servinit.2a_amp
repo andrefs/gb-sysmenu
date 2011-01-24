@@ -4,20 +4,30 @@
 
 # Configure iptables
 #sudo /sbin/iptables -L
-while [ -n "$ANS" ]; do
-	read -p "Do you want to automatically configure your iptables? [y/n]" -e ANS
-	if [[ "$ANS"=='y' || "$ANS"=='Y' ]]; then
-		sudo /sbin/iptables -I INPUT -p tcp --dport 80 -m state --state NEW,ESTABLISHED -j ACCEPT;
-		sudo /sbin/iptables -I OUTPUT -p tcp --sport 80 -m state --state ESTABLISHED -j ACCEPT;
-		sudo /sbin/iptables -I INPUT -p tcp --dport 443 -m state --state NEW,ESTABLISHED -j ACCEPT;
-		sudo /sbin/iptables -I OUTPUT -p tcp --sport 443 -m state --state ESTABLISHED -j ACCEPT;
-	fi
-done
+# while [ -n "$ANS" ]; do
+# 	read -p "Do you want to automatically configure your iptables? [y/n]" -e ANS
+# 	if [[ "$ANS"=='y' || "$ANS"=='Y' ]]; then
+# 		sudo /sbin/iptables -I INPUT -p tcp --dport 80 -m state --state NEW,ESTABLISHED -j ACCEPT;
+# 		sudo /sbin/iptables -I OUTPUT -p tcp --sport 80 -m state --state ESTABLISHED -j ACCEPT;
+# 		sudo /sbin/iptables -I INPUT -p tcp --dport 443 -m state --state NEW,ESTABLISHED -j ACCEPT;
+# 		sudo /sbin/iptables -I OUTPUT -p tcp --sport 443 -m state --state ESTABLISHED -j ACCEPT;
+# 	fi
+# done
 
 # Install apache2
 sudo aptitude update
 sudo aptitude install apache2
 echo
+
+# Install mysql
+sudo aptitude install mysql-server
+mysql_secure_installation
+
+# Install php
+sudo aptitude install php5 php5-mysql php5-dev php5-curl php5-gd php5-imagick php5-mcrypt php5-memcache php5-mhash php5-pspell php5-snmp php5-sqlite php5-xmlrpc php-pear phpmyadmin php5-mysql
+
+# Restart apache
+sudo /usr/sbin/apache2ctl graceful
 
 # Server name
 read -p "Enter the name for your server (something like demo.example.com):" -e SN
