@@ -283,7 +283,7 @@ if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
 fi
 
 echo -e "\nConnecting to ssh $UN@$ADDR to deactivate root account."
-ssh $UN@$ADDR <<SIEND2
+ssh -p $SSHPN $UN@$ADDR <<SIEND2
 # Deactivate root account ($UN can still run 'sudo -s')
 echo $PASS | sudo -S passwd -l root
 $UTILS
@@ -296,5 +296,5 @@ SIEND2
 
 echo -e "
 Done. You should now be able to login in $ADDR with 
-user $UN by running \`ssh $UN@$ADDR\`
+user $UN by running \`ssh -p $SSHPN $UN@$ADDR\`
 "
