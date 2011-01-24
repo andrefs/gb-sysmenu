@@ -16,15 +16,15 @@
 
 # Install apache2
 sudo aptitude update -y
-sudo aptitude install apache2 -y
+sudo aptitude install -y apache2
 echo
 
 # Install mysql
-sudo aptitude install mysql-server -y
+sudo aptitude install -y mysql-server
 mysql_secure_installation
 
 # Install php
-sudo aptitude install php5 php5-mysql php5-dev php5-curl php5-gd php5-imagick php5-mcrypt php5-memcache php5-mhash php5-pspell php5-snmp php5-sqlite php5-xmlrpc php-pear phpmyadmin php5-mysql -y
+sudo aptitude install -y php5 php5-mysql php5-dev php5-curl php5-gd php5-imagick php5-mcrypt php5-memcache php5-mhash php5-pspell php5-snmp php5-sqlite php5-xmlrpc php-pear phpmyadmin php5-mysql
 
 # Configure phpMyAdmin
 ln -s /usr/shared/phpmyadmin /var/www/phpmyadmin
