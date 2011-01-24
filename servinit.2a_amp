@@ -30,7 +30,7 @@ sudo aptitude install php5 php5-mysql php5-dev php5-curl php5-gd php5-imagick ph
 sudo /usr/sbin/apache2ctl graceful
 
 # Server name
-read -p "Enter the name for your server (something like demo.example.com):" -e SN
+read -p "Enter the name for your server (something like demo.example.com): " -e SN
 sudo echo >> /etc/apache2/conf.d/servername.conf
 sudo echo "ServerName $SN" /etc/apache2/conf.d/servername.conf
 
@@ -47,34 +47,36 @@ else
 	echo "Oh snap, something went wrong!"
 fi
 
-# MPM
-echo 
-echo "### This may not be necessary."
-echo "Checking which MPM you are using:"
-sudo aptitude search apache2-mpm- | grep -e "^i"
-echo
-echo "Depending on the result (should be either worker or prefork), check that one of these blocks in present in one of the apache2 configuration files (should be in /etc/apache2/apache2.conf):"
-echo
-echo "<IfModule mpm_prefork_module>"
-echo "    StartServers          5 "
-echo "    MinSpareServers       5 "
-echo "    MaxSpareServers      10 "
-echo "    MaxClients          150 "
-echo "    MaxRequestsPerChild   0 "
-echo "</IfModule>                 "
-echo "                            "
-echo "<IfModule mpm_worker_module> "
-echo "    StartServers          2 "
-echo "    MinSpareThreads      25 "
-echo "    MaxSpareThreads      75 " 
-echo "    ThreadLimit          64 "
-echo "    ThreadsPerChild      25 "
-echo "    MaxClients          150 "
-echo "    MaxRequestsPerChild   0 "
-echo "</IfModule>"
-echo
-read
-sudo vim /etc/apache2/apache2.conf
+sudo updatedb
+
+# # MPM
+# echo 
+# echo "### This may not be necessary."
+# echo "Checking which MPM you are using:"
+# sudo aptitude search apache2-mpm- | grep -e "^i"
+# echo
+# echo "Depending on the result (should be either worker or prefork), check that one of these blocks in present in one of the apache2 configuration files (should be in /etc/apache2/apache2.conf):"
+# echo
+# echo "<IfModule mpm_prefork_module>"
+# echo "    StartServers          5 "
+# echo "    MinSpareServers       5 "
+# echo "    MaxSpareServers      10 "
+# echo "    MaxClients          150 "
+# echo "    MaxRequestsPerChild   0 "
+# echo "</IfModule>                 "
+# echo "                            "
+# echo "<IfModule mpm_worker_module> "
+# echo "    StartServers          2 "
+# echo "    MinSpareThreads      25 "
+# echo "    MaxSpareThreads      75 " 
+# echo "    ThreadLimit          64 "
+# echo "    ThreadsPerChild      25 "
+# echo "    MaxClients          150 "
+# echo "    MaxRequestsPerChild   0 "
+# echo "</IfModule>"
+# echo
+# read
+# sudo vim /etc/apache2/apache2.conf
 
 ### PART 2: EFFICIENCY AND SECURITY ============================================
 
