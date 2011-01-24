@@ -1,7 +1,7 @@
 #!/bin/bash
 
 read -p "Enter the domain name: (something like domain1.com)" -e DOMAIN
-mkdir -p public_html/$DOMAIN/{public,private,log,cgi-bin,backup}
+mkdir -p $HOME/public_html/$DOMAIN/{public,private,log,cgi-bin,backup}
 
 echo "<html>
   <head>
@@ -41,7 +41,7 @@ echo "# Place any notes or comments you have here
   CustomLog /home/demo/public_html/$DOMAIN/log/access.log combined
 
 </VirtualHost>
-" > etc/apache2/sites-available/$DOMAIN
+" > /etc/apache2/sites-available/$DOMAIN
 
 sudo /usr/sbin/a2ensite $DOMAIN
 sudo /etc/init.d/apache2 reload
