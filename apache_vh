@@ -1,0 +1,54 @@
+#!/bin/bash
+
+read -p "Enter the domain name: (something like domain1.com)" -e DOMAIN
+mkdir -p public_html/$DOMAIN/{public,private,log,cgi-bin,backup}
+
+echo "<html>
+  <head>
+    <title>$DOMAIN</title>
+  </head>
+  <body>
+    <h1>$DOMAIN</h1>
+  </body>
+</html>
+" > public_html/$DOMAIN/public/index.html
+
+sudo chmod -R a+rX $HOME/public_html
+sudo chmod a+rx $HOME
+
+echo "# Place any notes or comments you have here
+# It will make any customization easier to understand in the weeks to come
+
+# domain: domain1.com
+# public: /home/demo/public_html/$DOMAIN/
+
+<VirtualHost *:80>
+
+  # Admin email, Server Name (domain name) and any aliases
+  ServerAdmin webmaster@domain1.com
+  ServerName  www.domain1.com
+  ServerAlias domain1.com
+
+
+  # Index file and Document Root (where the public files are located)
+  DirectoryIndex index.html
+  DocumentRoot /home/demo/public_html/$DOMAIN/public
+
+
+  # Custom log file locations
+  LogLevel warn
+  ErrorLog  /home/demo/public_html/$DOMAIN/log/error.log
+  CustomLog /home/demo/public_html/$DOMAIN/log/access.log combined
+
+</VirtualHost>
+" > etc/apache2/sites-available/$DOMAIN
+
+sudo /usr/sbin/a2ensite $DOMAIN
+sudo /etc/init.d/apache2 reload
+
+
+
+
+
+
+
