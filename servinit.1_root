@@ -287,9 +287,11 @@ ssh $UN@$ADDR <<SIEND2
 # Deactivate root account ($UN can still run 'sudo -s')
 echo $PASS | sudo -S passwd -l root
 $UTILS
-git clone git://github.com/andrefs/servinit.git ~/.servinit
+git clone git://github.com/andrefs/servinit.git -b other/simonserver ~/.servinit
 cd ~/.servinit
 for i in \$(ls .); do echo $PASS | sudo -S ln -s -f \$(pwd)/\$i /usr/local/bin/\$i ; done
+chmod +x servinit.*
+cd -
 SIEND2
 
 echo -e "
