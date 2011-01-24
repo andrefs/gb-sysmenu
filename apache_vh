@@ -19,26 +19,26 @@ sudo chmod a+rx $HOME
 echo "# Place any notes or comments you have here
 # It will make any customization easier to understand in the weeks to come
 
-# domain: domain1.com
-# public: /home/demo/public_html/$DOMAIN/
+# domain: $DOMAIN
+# public: $HOME/public_html/$DOMAIN/
 
 <VirtualHost *:80>
 
   # Admin email, Server Name (domain name) and any aliases
-  ServerAdmin webmaster@domain1.com
-  ServerName  www.domain1.com
-  ServerAlias domain1.com
+  ServerAdmin webmaster@$DOMAIN
+  ServerName  www.$DOMAIN
+  ServerAlias $DOMAIN
 
 
   # Index file and Document Root (where the public files are located)
   DirectoryIndex index.html
-  DocumentRoot /home/demo/public_html/$DOMAIN/public
+  DocumentRoot $HOME/public_html/$DOMAIN/public
 
 
   # Custom log file locations
   LogLevel warn
-  ErrorLog  /home/demo/public_html/$DOMAIN/log/error.log
-  CustomLog /home/demo/public_html/$DOMAIN/log/access.log combined
+  ErrorLog  $HOME/public_html/$DOMAIN/log/error.log
+  CustomLog $HOME/public_html/$DOMAIN/log/access.log combined
 
 </VirtualHost>
 " > /etc/apache2/sites-available/$DOMAIN
