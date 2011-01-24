@@ -40,15 +40,22 @@ echo "# Place any notes or comments you have here
   ErrorLog  $HOME/public_html/$DOMAIN/log/error.log
   CustomLog $HOME/public_html/$DOMAIN/log/access.log combined
 
+  ScriptAlias /cgi-bin/ $HOME/public_html/$DOMAIN/cgi-bin/
+  <Location /cgi-bin>
+  Options +ExecCGI
+  </Location>
+
+  <Directory $HOME/public_html/$DOMAIN/public>
+  Options -Indexes
+  Options -Includes
+  Options +SymLinksIfOwnerMatch
+  #Options -FollowSymLinks
+  AllowOverride All
+  </Directory>
+
 </VirtualHost>
 " > /etc/apache2/sites-available/$DOMAIN
 
 sudo /usr/sbin/a2ensite $DOMAIN
 sudo /etc/init.d/apache2 reload
-
-
-
-
-
-
 
