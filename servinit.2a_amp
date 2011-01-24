@@ -45,7 +45,7 @@ sudo /usr/sbin/apache2ctl graceful
 # Test with wget
 echo
 echo "Apache2 server should now be working. Testing with wget."
-wget http://$(hostname -I)
+wget http://$(hostname -I) -o /dev/null
 if [ $? -eq 0 ]; then
 	echo "Well done, Apache 2 server installed!"
 else
