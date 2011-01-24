@@ -1,6 +1,6 @@
 #!/bin/bash
 
-read -p "Enter the domain name: (something like domain1.com)" -e DOMAIN
+read -p "Enter the domain name: (something like domain1.com)\n" -e DOMAIN
 mkdir -p $HOME/public_html/$DOMAIN/{public,private,log,cgi-bin,backup}
 
 echo "<html>
