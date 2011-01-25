@@ -80,10 +80,11 @@ b=$(cat /dev/urandom | tr -dc bcdfghjklmnpqrstvxz | head -c 1)
 c=$(cat /dev/urandom | tr -dc aeiou | head -c 1)
 d=$(cat /dev/urandom | tr -dc bcdfghjklmnpqrstvxz | head -c 1)
 DBPASS=${DBNAME}_${string[$a]}${string[$b]}${string[$c]}${string[$d]}
+echo "GRANT ALL PRIVILEGES ON '$DBNAME'.* TO '$DBUSER'@'localhost' IDENTIFIED BY '$DBPASS';"
 echo "Please enter the root password for MySQL:"
 mysql -u root -p <<MSEND
 CREATE DATABASE '$DBNAME';
-GRANT ALL PRIVILEGES ON '$DBNAME'.* TO '${DBNAME}_u'@'localhost' IDENTIFIED BY '$DBPASS';
+GRANT ALL PRIVILEGES ON '$DBNAME'.* TO '$DBUSER'@'localhost' IDENTIFIED BY '$DBPASS';
 FLUSH PREVILEGES;
 MSEND
 
