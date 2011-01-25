@@ -10,7 +10,8 @@ read -p "Do you want to clone an existing git repository? [y/N] "
 if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
 	read -p "Enter the git repository URL: " -e GITADDR
 	git clone $GITADDR $HOME/public_html/$DOMAIN
-	if [ DOMR=$(find | grep "site_files$") ]; then
+	DOMR=$(find | grep "site_files$")
+	if [ -n "$DOMR" ]; then
 		mkdir -p $DOMR/{public,log}
 	else
 		DOMR="$HOME/public_html/$DOMAIN"
