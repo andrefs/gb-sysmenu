@@ -290,7 +290,7 @@ $UTILS
 git clone git://github.com/andrefs/servinit.git -b other/simonserver ~/.servinit
 cd ~/.servinit
 for i in \$(ls .); do echo $PASS | sudo -S ln -s -f \$(pwd)/\$i /usr/local/bin/\$i ; done
-chmod +x servinit.*
+chmod +x si.*
 cd -
 SIEND2
 
