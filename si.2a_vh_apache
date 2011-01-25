@@ -70,17 +70,15 @@ sudo /etc/init.d/apache2 reload
 read -p "Do you want to create a MySQL database for this domain? [Y/n] "
 if [[ "$REPLY" == "n" || "$REPLY" == "N" ]]; then
 	echo "Finished configuring $DOMAIN"
-	exit(0)
+	exit 0
 fi
 
 DBNAME=`echo $DOMAIN | sed 's/[^a-zA-Z_]/_/g' | head -c 60`
 DBUSER=${DBNAME}_u
-vow=aeiouwy
-cons=bcdfghjklmnpqrstvxz
-a=$RANDOM; $a %= 19;
-b=$RANDOM; $a %= 7;
-c=$RANDOM; $a %= 19;
-d=$RANDOM; $a %= 7;
+a=$(cat /dev/urandom | tr -dc aeiou | head -c 1)
+b=$(cat /dev/urandom | tr -dc bcdfghjklmnpqrstvxz | head -c 1)
+c=$(cat /dev/urandom | tr -dc aeiou | head -c 1)
+d=$(cat /dev/urandom | tr -dc bcdfghjklmnpqrstvxz | head -c 1)
 DBPASS=${DBNAME}_${string[$a]}${string[$b]}${string[$c]}${string[$d]}
 echo "Please enter the root password for MySQL:"
 mysql -u root -p <<MSEND
