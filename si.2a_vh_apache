@@ -44,11 +44,9 @@ echo "# Place any notes or comments you have here
   ServerName  www.$DOMAIN
   ServerAlias $DOMAIN
 
-
   # Index file and Document Root (where the public files are located)
   DirectoryIndex index.html
   DocumentRoot $DOMR/public
-
 
   # Custom log file locations
   LogLevel warn
@@ -69,3 +67,29 @@ echo "# Place any notes or comments you have here
 sudo /usr/sbin/a2ensite $DOMAIN
 sudo /etc/init.d/apache2 reload
 
+read -p "Do you want to create a MySQL database for this domain? [Y/n] "
+if [[ "$REPLY" == "n" || "$REPLY" == "N" ]]; then
+	echo "Finished configuring $DOMAIN"
+	exit(0)
+fi
+
+DBNAME=`echo $DOMAIN | sed 's/[^a-zA-Z_]/_/g' | head -c 60`
+DBUSER=${DBNAME}_u
+vow=aeiouwy
+cons=bcdfghjklmnpqrstvxz
+a=$RANDOM; $a %= 19;
+b=$RANDOM; $a %= 7;
+c=$RANDOM; $a %= 19;
+d=$RANDOM; $a %= 7;
+DBPASS=${DBNAME}_${string[$a]}${string[$b]}${string[$c]}${string[$d]}
+echo "Please enter the root password for MySQL:"
+mysql -u root -p <<MSEND
+CREATE DATABASE '$DBNAME';
+GRANT ALL PRIVILEGES ON '$DBNAME'.* TO '${DBNAME}_u'@'localhost' IDENTIFIED BY '$DBPASS';
+FLUSH PREVILEGES;
+MSEND
+
+echo "Created database $DBNAME with user $DBUSER and password $DBPASS."
+echo "Please write down these data, you will need it later."
+echo
+echo "Finished configuring $DOMAIN"
