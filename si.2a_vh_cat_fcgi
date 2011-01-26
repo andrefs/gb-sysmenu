@@ -6,14 +6,15 @@ mkdir -p "$HOME/public_html"
 sudo chmod -R a+rX $HOME/public_html
 sudo chmod a+rx $HOME
 
-echo -e "Enter the domain name: (something like domain1.com)\n"
+echo -e "Enter the domain name: (something like domain1.com)"
 read -e DOMAIN
 read -p "Do you want to clone an existing git repository? [y/N] "
 if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
-	echo -e "Enter the git repository URL:\n" 
+	echo -e "Enter the git repository URL:" 
 	read -e GITADDR
-	git clone $GITADDR $HOME/public_html/$DOMAIN
-	mkdir -p $DOMAIN/{public,log,bin,backup}
+	DOMR="$HOME/public_html/$DOMAIN"
+	git clone $GITADDR $DOMR
+	mkdir -p $DOMR/{public,log,bin,backup}
 	FCGIFILE=$(pwd)$(find | grep -e "fastcgi.pl$" | sed "s/^\.//")
 else
 	DOMR="$HOME/public_html/$DOMAIN"
@@ -51,8 +52,8 @@ echo "
     #TransferLog logs/$DOMAIN.access_log
 
 	# Index file and Document Root (where the public files are located)
-	DocumentRoot $DOMAIN/root
-    Alias /static $DOMAIN/root/static
+	DocumentRoot $DOMR/root
+    Alias /static $DOMR/root/static
 
     <Location /static>
         SetHandler default-handler
