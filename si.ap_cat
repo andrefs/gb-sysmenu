@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Install Catalyst, dependencies and Tutorial App:
+sudo aptitude  install sqlite3 libdbd-sqlite3-perl libcatalyst-perl libcatalyst-modules-perl libdbix-class-timestamp-perl libdatetime-format-sqlite-perl libconfig-general-perl libhtml-formfu-model-dbic-perl libterm-readline-perl-perl libdbix-class-encodedcolumn-perl libperl6-junction-perl libtest-pod-perl libtest-pod-coverage-perl 
+
+read -p "Do you want to download and test Catalyst with tutorial app? [y/N] "
+if [[ "$REPLY" == "n" || "$REPLY" == "N" ]]; then
+	svn co http://dev.catalystframework.org/repos/Catalyst/trunk/examples/Tutorial/MyApp_Chapter8
+	cd MyApp_Chapter8/MyApp
+	CATALYST_DEBUG=0 prove -wl t
+	
+	#Run embedded server and test from the outside:
+	script/myapp_server.pl &
+fi
+
+read -p "Do you want to install and configure mod_fcgid? [Y/n] "
+if [[ "$REPLY" != "n" && "$REPLY" != "N" ]]; then
+	sudo aptitude install -y libapache2-mod-fcgid
+fi
+
+
+echo
+echo "Finished installing Catalyst."
+echo
