@@ -31,6 +31,7 @@ else
 	" > $DOMR/public/index.html
 fi
 
+sudo su
 echo "# Place any notes or comments you have here
 # It will make any customization easier to understand in the weeks to come
 
@@ -63,6 +64,7 @@ echo "# Place any notes or comments you have here
 
 </VirtualHost>
 " > /etc/apache2/sites-available/$DOMAIN
+exit
 
 sudo /usr/sbin/a2ensite $DOMAIN
 sudo /etc/init.d/apache2 reload
@@ -75,16 +77,15 @@ fi
 
 DBNAME=`echo $DOMAIN | sed 's/[^a-zA-Z_]/_/g' | head -c 60`
 DBUSER=${DBNAME}_u
-a=$(cat /dev/urandom | tr -dc aeiou | head -c 1)
-b=$(cat /dev/urandom | tr -dc bcdfghjklmnpqrstvxz | head -c 1)
-c=$(cat /dev/urandom | tr -dc aeiou | head -c 1)
-d=$(cat /dev/urandom | tr -dc bcdfghjklmnpqrstvxz | head -c 1)
-DBPASS=${DBNAME}_${string[$a]}${string[$b]}${string[$c]}${string[$d]}
-echo "GRANT ALL PRIVILEGES ON '$DBNAME'.* TO '$DBUSER'@'localhost' IDENTIFIED BY '$DBPASS';"
+p1=$(cat /dev/urandom | tr -dc aeiou | head -c 1)
+p2=$(cat /dev/urandom | tr -dc bcdfghjklmnpqrstvxz | head -c 1)
+p3=$(cat /dev/urandom | tr -dc aeiou | head -c 1)
+p4=$(cat /dev/urandom | tr -dc bcdfghjklmnpqrstvxz | head -c 1)
+DBPASS=${DBNAME}_$p1$p2$p3$p4
 echo "Please enter the root password for MySQL:"
 mysql -u root -p <<MSEND
 CREATE DATABASE '$DBNAME';
-GRANT ALL PRIVILEGES ON '$DBNAME'.* TO '$DBUSER'@'localhost' IDENTIFIED BY '$DBPASS';
+GRANT ALL PRIVILEGES ON $DBNAME.* TO '$DBUSER'@'localhost' IDENTIFIED BY '$DBPASS';
 FLUSH PREVILEGES;
 MSEND
 
