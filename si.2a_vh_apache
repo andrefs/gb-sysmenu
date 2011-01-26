@@ -83,13 +83,10 @@ p3=$(cat /dev/urandom | tr -dc bcdfghjklmnpqrstvxz | head -c 1)
 p4=$(cat /dev/urandom | tr -dc aeiou | head -c 1)
 DBPASS=${DBNAME}_$p1$p2$p3$p4
 echo "Please enter the root password for MySQL:"
-echo -e "\n\nCREATE DATABASE '$DBNAME';
-GRANT ALL PRIVILEGES ON $DBNAME.* TO '$DBUSER'@'localhost' IDENTIFIED BY '$DBPASS';
-FLUSH PREVILEGES;\n\n"
 mysql -u root -p <<MSEND
-CREATE DATABASE '$DBNAME';
+CREATE DATABASE $DBNAME ;
 GRANT ALL PRIVILEGES ON $DBNAME.* TO '$DBUSER'@'localhost' IDENTIFIED BY '$DBPASS';
-FLUSH PREVILEGES;
+FLUSH PRIVILEGES;
 MSEND
 
 echo "Created database $DBNAME with user $DBUSER and password $DBPASS."
