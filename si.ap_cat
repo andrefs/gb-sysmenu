@@ -15,7 +15,8 @@ fi
 
 read -p "Do you want to install and configure mod_fcgid? [Y/n] "
 if [[ "$REPLY" != "n" && "$REPLY" != "N" ]]; then
-	sudo aptitude install -y libapache2-mod-fcgid
+	sudo a2dismod deflate
+	sudo aptitude install -y libapache2-mod-fcgid libfcgi-perl
 fi
 
 
