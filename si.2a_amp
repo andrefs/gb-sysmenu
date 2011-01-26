@@ -29,8 +29,8 @@ sudo aptitude install -y php5 php5-mysql php5-dev php5-curl php5-gd php5-imagick
 echo -e "\nPHP installed"
 
 # Configure phpMyAdmin
-ln -s /usr/shared/phpmyadmin /var/www/phpmyadmin
-cp /usr/share/phpmyadmin/libraries/{config.default.php,config.inc.php}
+sudo ln -s /usr/shared/phpmyadmin /var/www/phpmyadmin
+sudo cp /usr/share/phpmyadmin/libraries/{config.default.php,config.inc.php}
 read -p "Do you want to change the phpMyAdmin configuration file? [y/N] "
 if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
 	sudo vim /usr/share/phpmyadmin/libraries/config.inc.php
@@ -47,8 +47,8 @@ sudo /usr/sbin/apache2ctl graceful
 
 # Server name
 read -p "Enter the name for your server (something like demo.example.com): " -e SN
-sudo echo >> /etc/apache2/conf.d/servername.conf
-sudo echo -e "ServerName $SN\n" > /etc/apache2/conf.d/servername.conf
+echo -e "\nServerName $SN\n" > /tmp/ninjadmin
+sudo mv /tmp/ninjadmin /etc/apache2/conf.d/servername.conf
 
 # Graceful restart
 sudo /usr/sbin/apache2ctl graceful
@@ -116,5 +116,5 @@ grep "ServerSignature On" /etc/apache2/conf.d/security > /dev/null
 if [ $? -eq 0 ];
 	then echo -e "\nServerSignature On">> /etc/apache2/conf.d/security
 fi
-
+exit
 
