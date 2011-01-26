@@ -1,0 +1,99 @@
+#!/bin/bash
+# Create virtual hosts on Apache
+# targeted for Catalyst apps running with mod_fcgid
+
+mkdir -p "$HOME/public_html"
+sudo chmod -R a+rX $HOME/public_html
+sudo chmod a+rx $HOME
+
+echo -e "Enter the domain name: (something like domain1.com)\n"
+read -e DOMAIN
+read -p "Do you want to clone an existing git repository? [y/N] "
+if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
+	echo -e "Enter the git repository URL:\n" 
+	read -e GITADDR
+	git clone $GITADDR $HOME/public_html/$DOMAIN
+	mkdir -p $DOMAIN/{public,log,bin,backup}
+	FCGIFILE=$(pwd)$(find | grep "fastcgi.pl$" | sed "s/^\.//")
+else
+	DOMR="$HOME/public_html/$DOMAIN"
+	mkdir -p $DOMR/{public,private,log,cgi-bin,backup}
+	echo "<html>
+	  <head>
+	    <title>$DOMAIN</title>
+	  </head>
+	  <body>
+	    <h1>$DOMAIN</h1>
+	  </body>
+	</html>
+	" > $DOMR/public/index.html
+fi
+
+echo "
+# Place any notes or comments you have here
+# It will make any customization easier to understand in the weeks to come
+
+# domain: $DOMAIN
+# public: $HOME/public_html/$DOMAIN/
+
+<VirtualHost *:80>
+
+	# Admin email, Server Name (domain name) and any aliases
+	ServerAdmin webmaster@$DOMAIN
+	ServerName  www.$DOMAIN
+	ServerAlias $DOMAIN
+
+
+	# Custom log file locations
+	LogLevel warn
+	ErrorLog  $DOMR/log/error.log
+	CustomLog $DOMR/log/access.log combined
+    #TransferLog logs/$DOMAIN.access_log
+
+	# Index file and Document Root (where the public files are located)
+	DocumentRoot $DOMAIN/root
+    Alias /static $DOMAIN/root/static
+
+    <Location /static>
+        SetHandler default-handler
+    </Location>
+
+    Alias / $FCGIDFILE/
+
+    <Location />
+        Options ExecCGI
+        Order allow,deny
+        Allow from all
+        AddHandler fcgid-script .pl
+    </Location>
+</VirtualHost>
+" > /tmp/$DOMAIN
+sudo mv /tmp/$DOMAIN /etc/apache2/sites-available/$DOMAIN
+
+sudo /usr/sbin/a2ensite $DOMAIN
+sudo /etc/init.d/apache2 reload
+
+read -p "Do you want to create a MySQL database for this domain? [Y/n] "
+if [[ "$REPLY" == "n" || "$REPLY" == "N" ]]; then
+	echo "Finished configuring $DOMAIN"
+	exit 0
+fi
+
+DBNAME=`echo $DOMAIN | sed 's/[^a-zA-Z_]/_/g' | head -c 60`
+DBUSER="`echo ${DBNAME} | head -c 14`_u"
+p1=$(cat /dev/urandom | tr -dc bcdfghjklmnpqrstvxz | head -c 1)
+p2=$(cat /dev/urandom | tr -dc aeiou | head -c 1)
+p3=$(cat /dev/urandom | tr -dc bcdfghjklmnpqrstvxz | head -c 1)
+p4=$(cat /dev/urandom | tr -dc aeiou | head -c 1)
+DBPASS=${DBNAME}_$p1$p2$p3$p4
+echo "Please enter the root password for MySQL:"
+mysql -u root -p <<MSEND
+CREATE DATABASE $DBNAME ;
+GRANT ALL PRIVILEGES ON $DBNAME.* TO '$DBUSER'@'localhost' IDENTIFIED BY '$DBPASS';
+FLUSH PRIVILEGES;
+MSEND
+
+echo "Created database $DBNAME with user $DBUSER and password $DBPASS."
+echo "Please write down these data, you will need it later."
+echo
+echo "Finished configuring $DOMAIN"
