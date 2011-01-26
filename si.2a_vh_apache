@@ -76,11 +76,11 @@ if [[ "$REPLY" == "n" || "$REPLY" == "N" ]]; then
 fi
 
 DBNAME=`echo $DOMAIN | sed 's/[^a-zA-Z_]/_/g' | head -c 60`
-DBUSER=${DBNAME}_u
-p1=$(cat /dev/urandom | tr -dc aeiou | head -c 1)
-p2=$(cat /dev/urandom | tr -dc bcdfghjklmnpqrstvxz | head -c 1)
-p3=$(cat /dev/urandom | tr -dc aeiou | head -c 1)
-p4=$(cat /dev/urandom | tr -dc bcdfghjklmnpqrstvxz | head -c 1)
+DBUSER="`echo ${DBNAME} | head -c 14`_u"
+p1=$(cat /dev/urandom | tr -dc bcdfghjklmnpqrstvxz | head -c 1)
+p2=$(cat /dev/urandom | tr -dc aeiou | head -c 1)
+p3=$(cat /dev/urandom | tr -dc bcdfghjklmnpqrstvxz | head -c 1)
+p4=$(cat /dev/urandom | tr -dc aeiou | head -c 1)
 DBPASS=${DBNAME}_$p1$p2$p3$p4
 echo "Please enter the root password for MySQL:"
 mysql -u root -p <<MSEND
