@@ -59,7 +59,7 @@ echo "
         SetHandler default-handler
     </Location>
 
-    Alias / $FCGIDFILE/
+    Alias / $FCGIFILE/
 
     <Location />
         Options ExecCGI
