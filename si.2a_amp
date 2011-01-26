@@ -48,7 +48,7 @@ sudo /usr/sbin/apache2ctl graceful
 # Server name
 read -p "Enter the name for your server (something like demo.example.com): " -e SN
 sudo echo >> /etc/apache2/conf.d/servername.conf
-sudo echo "ServerName $SN" /etc/apache2/conf.d/servername.conf
+sudo echo -e "ServerName $SN\n" > /etc/apache2/conf.d/servername.conf
 
 # Graceful restart
 sudo /usr/sbin/apache2ctl graceful
@@ -96,24 +96,25 @@ sudo updatedb
 
 ### PART 2: EFFICIENCY AND SECURITY ============================================
 
+sudo su
 grep "AccessFileName .htaccess" /etc/apache2/apache2.conf > /dev/null
 if [ $? -eq 0 ];
-	then sudo echo -e "\nAccessFileName .htaccess" >> /etc/apache2/apache2.conf
+	then echo -e "\nAccessFileName .htaccess" >> /etc/apache2/apache2.conf
 fi
 
 grep "ErrorLog /var/log/apache2/error.log" /etc/apache2/apache2.conf > /dev/null
 if [ $? -eq 0 ];
-	then sudo echo -e "\nErrorLog /var/log/apache2/error.log" >> /etc/apache2/apache2.conf
+	then echo -e "\nErrorLog /var/log/apache2/error.log" >> /etc/apache2/apache2.conf
 fi
 
 grep "ServerTokens Prod" /etc/apache2/conf.d/security > /dev/null
 if [ $? -eq 0 ];
-	then sudo echo -e "\nServerTokens Prod" >> /etc/apache2/conf.d/security
+	then echo -e "\nServerTokens Prod" >> /etc/apache2/conf.d/security
 fi
 
 grep "ServerSignature On" /etc/apache2/conf.d/security > /dev/null
 if [ $? -eq 0 ];
-	then sudo echo -e "\nServerSignature On">> /etc/apache2/conf.d/security
+	then echo -e "\nServerSignature On">> /etc/apache2/conf.d/security
 fi
 
 
