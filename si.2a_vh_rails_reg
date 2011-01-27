@@ -1,6 +1,7 @@
 #!/bin/bash
 # Create virtual hosts on Apache
 
+set -e
 mkdir -p "$HOME/public_html"
 sudo chmod -R a+rX $HOME/public_html
 sudo chmod a+rx $HOME
