@@ -17,6 +17,7 @@ if [ "$PROC" == "n" ]; then
 fi
 
 read -p "What is the address of the server you wish to configure? " -e ADDR
+echo
 read -p "Enter a new username for the regular account: " -e UN
 while [ -z "$UN" ]; do
 	read -p "Empty username. Please enter a valid username: " -e UN
@@ -24,7 +25,6 @@ done
 
 GO=0
 while [ $GO -ne 1 ]; do
-	echo
 	read -p "Enter new UNIX password: " -s -e PASS
 	echo
 	read -p "Retype new UNIX password: " -s -e PASSCONF
