@@ -90,6 +90,12 @@ FLUSH PRIVILEGES;
 MSEND
 
 echo "Created database $DBNAME with user $DBUSER and password $DBPASS."
+echo "production:
+  adapter: mysql
+  database: $DBNAME
+  username: $DBUSER
+  password: $DBPASS
+  host: localhost" > $DOMR/config/database.yml
 echo "Please write down these data, you will need it later."
 echo
 echo "Finished configuring $DOMAIN"
