@@ -68,22 +68,22 @@ sudo updatedb
 ### PART 2: EFFICIENCY AND SECURITY ============================================
 
 grep "AccessFileName .htaccess" /etc/apache2/apache2.conf > /dev/null
-if [ $? -eq 0 ];
-	then echo -e "\nAccessFileName .htaccess" | sudo tee -a /etc/apache2/apache2.conf
+if [ $? -ne 0 ];
+	then echo -e "\nAccessFileName .htaccess" | sudo tee -a /etc/apache2/apache2.conf > /dev/null
 fi
 
 grep "ErrorLog /var/log/apache2/error.log" /etc/apache2/apache2.conf > /dev/null
-if [ $? -eq 0 ];
-	then echo -e "\nErrorLog /var/log/apache2/error.log" | sudo tee -a /etc/apache2/apache2.conf
+if [ $? -ne 0 ];
+	then echo -e "\nErrorLog /var/log/apache2/error.log" | sudo tee -a /etc/apache2/apache2.conf > /dev/null
 fi
 
 grep "ServerTokens Prod" /etc/apache2/conf.d/security > /dev/null
-if [ $? -eq 0 ];
-	then echo -e "\nServerTokens Prod" | sudo tee -a /etc/apache2/conf.d/security
+if [ $? -ne 0 ];
+	then echo -e "\nServerTokens Prod" | sudo tee -a /etc/apache2/conf.d/security > /dev/null
 fi
 
 grep "ServerSignature On" /etc/apache2/conf.d/security > /dev/null
-if [ $? -eq 0 ];
-	then echo -e "\nServerSignature On" | sudo tee -a /etc/apache2/conf.d/security
+if [ $? -ne 0 ];
+	then echo -e "\nServerSignature On" | sudo tee -a /etc/apache2/conf.d/security  > /dev/null
 fi
 
