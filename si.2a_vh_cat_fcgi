@@ -14,7 +14,7 @@ if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
 	read -e GITADDR
 	DOMR="$HOME/public_html/$DOMAIN"
 	git clone $GITADDR $DOMR
-	mkdir -p $DOMR/{public,log,bin,backup}
+	mkdir -p $DOMR/{log,bin,backup}
 	FCGIFILE=$(pwd)$(find | grep -e "fastcgi.pl$" | sed "s/^\.//")
 else
 	DOMR="$HOME/public_html/$DOMAIN"
