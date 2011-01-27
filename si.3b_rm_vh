@@ -1,0 +1,39 @@
+#!/bin/bash
+# Create virtual hosts on Apache
+
+set -e
+
+echo "You currently have this sites on your sites-available directory:"
+ls -1 /etc/apache2/sites-available | nl | perl -plne 's/\s+(\d+)\s+/ [$1] /g'
+
+read -p "Please enter the number of the site you want to remove: [0 to quit] " -e NUMBER
+while ! [[ "$NUMBER" =~ ^[0-9]+$ ]]; do
+	echo "$NUMBER is not a valid number."
+	ls -1 /etc/apache2/sites-available | nl | perl -plne 's/\s+(\d+)\s+/ [$1] /g'
+	read -p "Please enter the number of the site you want to remove: [0 to quit] " -e NUMBER
+done
+if [ "$NUMBER" == "0" ]; then
+	echo "Operation canceled."
+	exit 0
+fi
+SITE=$(ls -1 /etc/apache2/sites-available | head -$NUMBER | tail -1)
+
+echo "This will delete site $SITE and all its data."
+read -p "Are you sure you want to proceed? [y/N] "
+if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
+	echo "sudo a2dissite $SITE"
+	sudo a2dissite $SITE
+	sudo rm -rf /etc/apache2/sites-available/$SITE /etc/apache2/sites-enabled/$SITE $HOME/public_html/$SITE
+	echo "Site removed."
+	read -p "Do you also want to remove the database? [y/N] "
+	if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
+		DBNAME=`echo $SITE | sed 's/[^a-zA-Z_]/_/g' | head -c 60`
+		DBUSER="`echo ${DBNAME} | head -c 14`_u"
+		mysql -u root -p <<MSEND
+DROP USER '$DBUSER'@'localhost';
+DROP DATABASE IF EXISTS $DBNAME;
+MSEND
+	echo "Database removed."
+	fi
+fi
+		
