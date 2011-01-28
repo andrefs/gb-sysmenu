@@ -35,7 +35,7 @@ read -p "Do you want to change the phpMyAdmin configuration file? [y/N] "
 if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
 	sudo vim /usr/share/phpmyadmin/libraries/config.inc.php
 fi
-wget http://$(hostname -I)/phpmyadmin -o /dev/null
+wget http://$(hostname -I)/phpmyadmin -O /dev/null
 if [ $? -eq 0 ]; then
 	echo "Well done, phpMyAdmin is installed! (tested at http://$(hostname -I)/phpmyadmin)"
 else
@@ -56,7 +56,7 @@ sudo /usr/sbin/apache2ctl graceful
 # Test with wget
 echo
 echo "Apache2 server should now be working. Testing with wget."
-wget http://$(hostname -I) -o - > /dev/null
+wget http://$(hostname -I) -O - > /dev/null
 if [ $? -eq 0 ]; then
 	echo "Well done, Apache 2 server installed! (tested at http://$(hostname -I))"
 else

@@ -64,8 +64,7 @@ echo "
   </Directory>
 
 </VirtualHost>
-" > /tmp/$DOMAIN
-sudo mv /tmp/$DOMAIN /etc/apache2/sites-available/$DOMAIN
+" | sudo tee /etc/apache2/sites-available/$DOMAIN > /dev/null
 
 sudo /usr/sbin/a2ensite $DOMAIN
 sudo /etc/init.d/apache2 reload
@@ -84,6 +83,7 @@ p3=$(cat /dev/urandom | tr -dc bcdfghjklmnpqrstvxz | head -c 1)
 p4=$(cat /dev/urandom | tr -dc aeiou | head -c 1)
 DBPASS=${DBNAME}_$p1$p2$p3$p4
 echo "Please enter the root password for MySQL:"
+echo "Connecting to MySQL to create database and user. MySQL root password will be needed."
 mysql -u root -p <<MSEND
 CREATE DATABASE $DBNAME ;
 GRANT ALL PRIVILEGES ON $DBNAME.* TO '$DBUSER'@'localhost' IDENTIFIED BY '$DBPASS';
