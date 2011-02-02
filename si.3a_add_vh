@@ -14,6 +14,11 @@ if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
 	DOMR=$(pwd)$(find | grep "site_files$" | sed "s/^\.//")
 	if [ -n "$DOMR" ]; then
 		mkdir -p $DOMR/{public,log}
+		if [ -e "$DOMR/config" ]; then
+			cd $DOMR/config
+			for i in *.sample; do n=${i/.sample/}; cp $i $n; done
+			cd -
+		fi
 	else
 		DOMR="$HOME/public_html/$DOMAIN"
 		mkdir -p $DOMR/{public,private,log,cgi-bin,backup}
@@ -61,6 +66,7 @@ echo "
   Options +SymLinksIfOwnerMatch
   #Options -FollowSymLinks
   AllowOverride All
+  Options -MultiViews
   </Directory>
 
 </VirtualHost>
@@ -97,6 +103,19 @@ echo "production:
   username: $DBUSER
   password: $DBPASS
   host: localhost" > $DOMR/config/database.yml
-echo "Please write down these data, you will need it later."
+echo "Please write down this data, you may need it later."
 echo
-echo "Finished configuring $DOMAIN"
+
+GF=$(find $DOMR  | grep -e "Gemfile$" | head -1) 
+GFPATH=$(dirname $GF)
+if [[ -e $GFPATH ]]; then
+	read -p "Do you want to install the ruby gems this app needs? [Y/n]"
+	if [[ "$REPLY" != 'n' || "$REPLY" != 'N' ]]; then
+		cd $GFPATH
+		bundle install
+		cd -
+	fi
+fi
+echo
+echo "Finished installing ruby gems with bundler."
+echo "Fnished configuring $DOMAIN
