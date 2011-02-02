@@ -107,8 +107,8 @@ echo "Please write down this data, you may need it later."
 echo
 
 GF=$(find $DOMR  | grep -e "Gemfile$" | head -1) 
-GFPATH=$(dirname $GF)
-if [[ -e $GFPATH ]]; then
+if [[ -e $GF ]]; then
+	GFPATH=$(dirname $GF)
 	read -p "Do you want to install the ruby gems this app needs? [Y/n]"
 	if [[ "$REPLY" != 'n' || "$REPLY" != 'N' ]]; then
 		cd $GFPATH
