@@ -275,7 +275,7 @@ sudo aptitude safe-upgrade -y
 sudo aptitude install subversion subversion-tools git-core w3m  mlocate sqlite3 screen gcc build-essential -y
 SIEND1
 
-read -p "Do you want to install utils-menu on your server? [y/N] " -e UTILS
+read -p "Do you want to install utils-menu on your server? [y/N] "
 if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
 	UTILS="git clone git://github.com/regedor/Utils-menu.git ~/.utils-menu
 	chmod +x ~/.utils-menu/install.sh

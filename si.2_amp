@@ -63,7 +63,11 @@ else
 	echo "Oh snap, something went wrong while configuring Apache2!"
 fi
 
-sudo updatedb
+# read -p "Do you want to disable the default virtual host? [y/N] "
+# if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
+# 	# disable default vh
+# fi
+
 
 ### PART 2: EFFICIENCY AND SECURITY ============================================
 
@@ -86,4 +90,5 @@ grep "ServerSignature On" /etc/apache2/conf.d/security > /dev/null
 if [ $? -ne 0 ];
 	then echo -e "\nServerSignature On" | sudo tee -a /etc/apache2/conf.d/security  > /dev/null
 fi
+
 
