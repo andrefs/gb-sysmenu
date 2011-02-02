@@ -106,6 +106,7 @@ echo "production:
 echo "Please write down this data, you may need it later."
 echo
 
+export RAILS_ENV=production
 GF=$(find $DOMR  | grep -e "Gemfile$" | head -1) 
 if [[ -e $GF ]]; then
 	GFPATH=$(dirname $GF)
