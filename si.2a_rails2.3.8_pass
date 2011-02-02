@@ -39,7 +39,7 @@ sudo gem install --no-rdoc --no-ri bundler
 
 ## Passenger
 
-sudo gem install passenger
+sudo gem install  --no-rdoc --no-ri passenger
 sudo aptitude install -y libcurl4-openssl-dev
 sudo aptitude install -y libssl-dev
 sudo aptitude install -y apache2-prefork-dev
@@ -61,7 +61,7 @@ echo "
 LoadModule passenger_module $PASSFOLD/ext/apache2/mod_passenger.so
 PassengerRoot $PASSFOLD
 PassengerRuby /usr/bin/ruby1.8
-" | sudo tee /etc/apache2/apache2.conf > /dev/null
+" | sudo tee  -a /etc/apache2/apache2.conf > /dev/null
 
 sudo a2enmod rewrite
 sudo /etc/init.d/apache2 restart
