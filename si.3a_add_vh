@@ -13,7 +13,7 @@ if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
 	git clone $GITADDR $HOME/public_html/$DOMAIN
 	DOMR=$(pwd)$(find | grep "site_files$" | sed "s/^\.//")
 	if [ -n "$DOMR" ]; then
-		mkdir -p $DOMR/{public,log}
+		mkdir -p $DOMR/{public,log,config}
 		if [ -e "$DOMR/config" ]; then
 			cd $DOMR/config
 			for i in *.sample; do n=${i/.sample/}; cp $i $n; done
@@ -21,11 +21,11 @@ if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
 		fi
 	else
 		DOMR="$HOME/public_html/$DOMAIN"
-		mkdir -p $DOMR/{public,private,log,cgi-bin,backup}
+		mkdir -p $DOMR/{public,private,log,cgi-bin,backup,config}
 	fi
 else
 	DOMR="$HOME/public_html/$DOMAIN"
-	mkdir -p $DOMR/{public,private,log,cgi-bin,backup}
+	mkdir -p $DOMR/{public,private,log,cgi-bin,backup,config}
 	echo "<html>
 	  <head>
 	    <title>$DOMAIN</title>
