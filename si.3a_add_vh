@@ -116,7 +116,7 @@ if [[ -e $GF ]]; then
 		bundle install
 		cd -
 	fi
+echo "Finished installing ruby gems with bundler."
 fi
 echo
-echo "Finished installing ruby gems with bundler."
 echo "Finished configuring $DOMAIN"
