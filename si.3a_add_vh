@@ -119,4 +119,4 @@ if [[ -e $GF ]]; then
 fi
 echo
 echo "Finished installing ruby gems with bundler."
-echo "Fnished configuring $DOMAIN
+echo "Finished configuring $DOMAIN"
