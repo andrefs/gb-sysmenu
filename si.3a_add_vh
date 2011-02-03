@@ -81,7 +81,7 @@ if [[ "$REPLY" == "n" || "$REPLY" == "N" ]]; then
 	exit 0
 fi
 
-DBNAME=`echo $DOMAIN | sed 's/[^a-zA-Z_]/_/g' | head -c 60`
+DBNAME=`echo $DOMAIN | sed 's/[^a-zA-Z0-9_]/_/g' | head -c 60`
 DBUSER="`echo ${DBNAME} | head -c 14`_u"
 p1=$(cat /dev/urandom | tr -dc bcdfghjklmnpqrstvxz | head -c 1)
 p2=$(cat /dev/urandom | tr -dc aeiou | head -c 1)
