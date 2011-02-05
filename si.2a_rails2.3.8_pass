@@ -63,6 +63,8 @@ PassengerRoot $PASSFOLD
 PassengerRuby /usr/bin/ruby1.8
 " | sudo tee  -a /etc/apache2/apache2.conf > /dev/null
 
+echo "export RAILS_ENV=production" >> $HOME/.bashrc
+
 sudo a2enmod rewrite
 sudo /etc/init.d/apache2 restart
 #sudo /usr/sbin/apache2ctl graceful
