@@ -27,11 +27,11 @@ mkdir $BAKFOLDER
 mysqldump -u $DBUSER -p$DBPASS $DBNAME | gzip -9 -c > $BAKFOLDER/$DBNAME.sql.gz 
 
 if [ -e $HOME/public_html/$SITE/site_files/system ]; then
-	tar xvzf $BAKFOLDER/system.tar.gz $HOME/public_html/$SITE/site_files/system
+	tar cvzf $BAKFOLDER/system.tar.gz $HOME/public_html/$SITE/site_files/system
 fi
 
 if [ -e $HOME/public_html/$SITE/site_files/assets ]; then
-	tar xvzf $BAKFOLDER/assets.tar.gz $HOME/public_html/$SITE/site_files/assets
+	tar cvzf $BAKFOLDER/assets.tar.gz $HOME/public_html/$SITE/site_files/assets
 fi
 
 tar cvf $BAKFOLDER.tar $BAKFOLDER
