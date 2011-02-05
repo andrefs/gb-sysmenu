@@ -79,10 +79,8 @@ read -p "Please choose the SSH port number: [30022] " -e SSHPN
 if [ -z "$SSHPN" ]; then
 	SSHPN=30022
 fi
+SSHPUB=$(cat "$SSHPATH")
 
-
-echo "Copying public key to root@$ADDR"
-scp "$SSHPATH" root@$ADDR:id_rsa.pub
 echo -e "\nConnecting to ssh root@$ADDR"
 ssh root@$ADDR <<SIEND1
 export TERM="xterm"
@@ -96,10 +94,9 @@ echo "export EDITOR=vim" >> /root/.bashrc
 # Create non root user
 echo -e "$PASS\n$PASS\n$FN\n$RN\n$WP\n$HP\n$OT\ny\n" | adduser $UN 
 
-if [ -e id_rsa.pub ]; then
+if [ -n "$SSHPUB" ]; then
 	mkdir -p /home/$UN/.ssh/
-	cat id_rsa.pub >> /home/$UN/.ssh/authorized_keys
-	rm id_rsa.pub
+	echo "$SSHPUB" >> /home/$UN/.ssh/authorized_keys
 	chown -R $UN:$UN /home/$UN/.ssh
 	chmod 700 /home/$UN/.ssh
 	chmod 600 /home/$UN/.ssh/authorized_keys
