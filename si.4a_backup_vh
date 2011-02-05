@@ -24,7 +24,7 @@ fi
 
 BAKFOLDER=$SITE.bak.$(date +%Y%m%d_%H%M)
 mkdir $BAKFOLDER
-mysqldump -u $DBUSER -p$DBPASS $DBNAME | gzip -9 -c > $BAKFOLDER/$DBNAME.sql.gz 
+mysqldump --add-drop-database --add-drop-table -u $DBUSER -p$DBPASS $DBNAME | gzip -9 -c > $BAKFOLDER/$DBNAME.sql.gz 
 
 if [ -e $HOME/public_html/$SITE/site_files/system ]; then
 	tar cvzf $BAKFOLDER/system.tar.gz $HOME/public_html/$SITE/site_files/system
