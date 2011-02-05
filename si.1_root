@@ -298,3 +298,30 @@ echo -e "
 Done. You should now be able to login in $ADDR with 
 user $UN by running \`ssh -p $SSHPN $UN@$ADDR\`
 "
+
+
+
+: <<=cut
+=pod
+=head1 NAME
+
+   si.1_root - Servinit script to do the initial configuration in a Ubuntu
+			   linux server.
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+=head1 SEE ALSO
+
+si.2_amp 
+
+=head1 LICENSE
+
+GPLv2
+
+=head1 AUTHOR
+
+B<Andre Santos> andrefs <at> cpan <dot> org
+
+=cut

@@ -1,0 +1,45 @@
+#!/bin/bash
+
+echo "You currently have this sites on your sites-available directory:"
+ls -1 /etc/apache2/sites-available | nl | perl -plne 's/\s+(\d+)\s+/ [$1] /g'
+read -p "Which one do you want to backup? [0 to quit] " -e NUMBER
+while ! [[ "$NUMBER" =~ ^[0-9]+$ ]]; do
+	echo "$NUMBER is not a valid number."
+	ls -1 /etc/apache2/sites-available | nl | perl -plne 's/\s+(\d+)\s+/ [$1] /g'
+	read -p "Please enter the number of the site you want to backup: [0 to quit] " -e NUMBER
+done
+if [ "$NUMBER" == "0" ]; then
+	echo "Operation canceled."
+	exit 0
+fi
+SITE=$(ls -1 /etc/apache2/sites-available | head -$NUMBER | tail -1)
+echo "Backing up site $SITE."
+if [ -e $HOME/public_html/$SITE/site_files/config/database.yml ]; then
+	DBUSER=$(grep "username:" $HOME/public_html/$SITE/site_files/config/database.yml | sed 's/^.*\s*:\s*//')
+	DBNAME=$(grep "database:" $HOME/public_html/$SITE/site_files/config/database.yml | sed 's/^.*\s*:\s*//')
+	DBPASS=$(grep "password:" $HOME/public_html/$SITE/site_files/config/database.yml | sed 's/^.*\s*:\s*//')
+else
+	echo "Could not find database.yml file in $SITE folders."
+fi
+
+BAKFOLDER=$SITE.bak.$(date +%Y%m%d_%H%M)
+mkdir $BAKFOLDER
+mysqldump -u $DBUSER -p$DBPASS $DBNAME | gzip -9 -c > $BAKFOLDER/$DBNAME.sql.gz 
+
+if [ -e $HOME/public_html/$SITE/site_files/system ]; then
+	tar xvzf $BAKFOLDER/system.tar.gz $HOME/public_html/$SITE/site_files/system
+fi
+
+if [ -e $HOME/public_html/$SITE/site_files/assets ]; then
+	tar xvzf $BAKFOLDER/assets.tar.gz $HOME/public_html/$SITE/site_files/assets
+fi
+
+tar cvf $BAKFOLDER.tar $BAKFOLDER
+if [ $? -ne 0 ]; then
+	echo "Could not create final tar file. Will not remove folder $BAKFOLDER"
+else
+	rm -r $BAKFOLDER
+	echo "Backup file for site $SITE saved as $BAKFOLDER.tar"
+fi
+
+
