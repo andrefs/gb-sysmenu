@@ -16,6 +16,11 @@ if [ "$NUMBER" == "0" ]; then
 	exit 0
 fi
 SITE=$(ls -1 /etc/apache2/sites-available | head -$NUMBER | tail -1)
+read -p "This will overwrite some folders and the database from site $SITE. Are you sure you want to proceed? [Y/n] "
+if [ "$REPLY" == "n" || "$REPLY" == "N" ]; then
+    echo "Operation canceled."
+    exit 0
+fi
 echo "Applying restore to site $SITE."
 if [ -e $HOME/public_html/$SITE/site_files/config/database.yml ]; then
 	DBUSER=$(grep "username:" $HOME/public_html/$SITE/site_files/config/database.yml | sed 's/^.*\s*:\s*//')
@@ -25,19 +30,21 @@ else
 	echo "Could not find database.yml file in $SITE folders."
 fi
 
+echo "Overwriting database $DBNAME."
 zcat $BAKFOLDER/$DBNAME.sql.gz | mysql -u $DBUSER -p$DBPASS $DBNAME
 
 if [ -e $BAKFOLDER/assets.tar.gz ]; then
+	echo "Restoring $SITE/site_files/assets folder."
 	rm -rf $HOME/public_html/$SITE/site_files/assets
-	tar -C $BAKFOLDER/assets xvzf $BAKFOLDER/assets.tar.gz
-	mv $BAKFOLDER/assets $HOME/public_html/$SITE/site_files/assets
+	tar -C $HOME/public_html/$SITE/site_files/assets xvzf $BAKFOLDER/assets.tar.gz
 fi
 
 if [ -e $BAKFOLDER/system.tar.gz ]; then
+	echo "Restoring $SITE/site_files/system folder."
 	rm -rf $HOME/public_html/$SITE/site_files/system
-	tar -C $BAKFOLDER/system xvzf $BAKFOLDER/system.tar.gz
-	mv $BAKFOLDER/system $HOME/public_html/$SITE/site_files/system
+	tar -C $HOME/public_html/$SITE/site_files/system xvzf $BAKFOLDER/system.tar.gz
 fi
 
+echo "Restore completed."
 
 

@@ -24,19 +24,22 @@ fi
 
 BAKFOLDER=$SITE.bak.$(date +%Y%m%d_%H%M)
 mkdir $BAKFOLDER
+echo "Dumping database $DBNAME to file."
 mysqldump --add-drop-database --add-drop-table -u $DBUSER -p$DBPASS $DBNAME | gzip -9 -c > $BAKFOLDER/$DBNAME.sql.gz 
 
 if [ -e $HOME/public_html/$SITE/site_files/system ]; then
+	echo "Copying and compressing $SITE/site_files/system folder."
 	tar cvzf $BAKFOLDER/system.tar.gz $HOME/public_html/$SITE/site_files/system
 fi
 
 if [ -e $HOME/public_html/$SITE/site_files/assets ]; then
+	echo "Copying and compressing $SITE/site_files/assets folder."
 	tar cvzf $BAKFOLDER/assets.tar.gz $HOME/public_html/$SITE/site_files/assets
 fi
 
 tar cvf $BAKFOLDER.tar $BAKFOLDER
 if [ $? -ne 0 ]; then
-	echo "Could not create final tar file. Will not remove folder $BAKFOLDER"
+	echo "Could not create final compressed file. Will not remove folder $BAKFOLDER"
 else
 	rm -r $BAKFOLDER
 	echo "Backup file for site $SITE saved as $BAKFOLDER.tar"
