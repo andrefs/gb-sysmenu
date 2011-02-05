@@ -1,5 +1,7 @@
 #!/bin/bash
 
+
+
 set -e # Exit if any simple command fails
 
 echo "
@@ -17,6 +19,7 @@ if [ "$PROC" == "n" ]; then
 fi
 
 read -p "What is the address of the server you wish to configure? " -e ADDR
+ssh-keygen -R $ADDR
 echo
 read -p "Enter a new username for the regular account: " -e UN
 while [ -z "$UN" ]; do
