@@ -1,0 +1,43 @@
+#!/bin/bash
+
+BAKFOLDER=${1/\.tar/}
+tar -C $BAKFOLDER xvf $BAKFOLDER.tar
+
+echo "You currently have this sites on your sites-available directory:"
+ls -1 /etc/apache2/sites-available | nl | perl -plne 's/\s+(\d+)\s+/ [$1] /g'
+read -p "Which one do you want to apply this restore to? [0 to quit] " -e NUMBER
+while ! [[ "$NUMBER" =~ ^[0-9]+$ ]]; do
+	echo "$NUMBER is not a valid number."
+	ls -1 /etc/apache2/sites-available | nl | perl -plne 's/\s+(\d+)\s+/ [$1] /g'
+	read -p "Please enter the number of the site you want to apply the restore: [0 to quit] " -e NUMBER
+done
+if [ "$NUMBER" == "0" ]; then
+	echo "Operation canceled."
+	exit 0
+fi
+SITE=$(ls -1 /etc/apache2/sites-available | head -$NUMBER | tail -1)
+echo "Applying restore to site $SITE."
+if [ -e $HOME/public_html/$SITE/site_files/config/database.yml ]; then
+	DBUSER=$(grep "username:" $HOME/public_html/$SITE/site_files/config/database.yml | sed 's/^.*\s*:\s*//')
+	DBNAME=$(grep "database:" $HOME/public_html/$SITE/site_files/config/database.yml | sed 's/^.*\s*:\s*//')
+	DBPASS=$(grep "password:" $HOME/public_html/$SITE/site_files/config/database.yml | sed 's/^.*\s*:\s*//')
+else
+	echo "Could not find database.yml file in $SITE folders."
+fi
+
+zcat $BAKFOLDER/$DBNAME.sql.gz | mysql -u $DBUSER -p$DBPASS $DBNAME
+
+if [ -e $BAKFOLDER/assets.tar.gz ]; then
+	rm -rf $HOME/public_html/$SITE/site_files/assets
+	tar -C $BAKFOLDER/assets xvzf $BAKFOLDER/assets.tar.gz
+	mv $BAKFOLDER/assets $HOME/public_html/$SITE/site_files/assets
+fi
+
+if [ -e $BAKFOLDER/system.tar.gz ]; then
+	rm -rf $HOME/public_html/$SITE/site_files/system
+	tar -C $BAKFOLDER/system xvzf $BAKFOLDER/system.tar.gz
+	mv $BAKFOLDER/system $HOME/public_html/$SITE/site_files/system
+fi
+
+
+
