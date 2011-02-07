@@ -2,18 +2,6 @@
 # 
 ### PART 1: BASIC CONFIG =======================================================
 
-# Configure iptables
-#sudo /sbin/iptables -L
-# while [ -n "$ANS" ]; do
-# 	read -p "Do you want to automatically configure your iptables? [y/n]" -e ANS
-# 	if [[ "$ANS"=='y' || "$ANS"=='Y' ]]; then
-# 		sudo /sbin/iptables -I INPUT -p tcp --dport 80 -m state --state NEW,ESTABLISHED -j ACCEPT;
-# 		sudo /sbin/iptables -I OUTPUT -p tcp --sport 80 -m state --state ESTABLISHED -j ACCEPT;
-# 		sudo /sbin/iptables -I INPUT -p tcp --dport 443 -m state --state NEW,ESTABLISHED -j ACCEPT;
-# 		sudo /sbin/iptables -I OUTPUT -p tcp --sport 443 -m state --state ESTABLISHED -j ACCEPT;
-# 	fi
-# done
-
 # Install apache2
 sudo aptitude update -y
 sudo aptitude install -y apache2
@@ -39,7 +27,7 @@ wget http://$(hostname -I)/phpmyadmin -O /dev/null
 if [ $? -eq 0 ]; then
 	echo "Well done, phpMyAdmin is installed! (tested at http://$(hostname -I)/phpmyadmin)"
 else
-	echo "Oh snap, something went wrong while configuring phpMyAdmin!"
+	echo "Oh snap, something went wrong while configuring phpMyAdmin! (error code $?)"
 fi
 
 # Restart apache
@@ -60,13 +48,19 @@ wget http://$(hostname -I) -O - > /dev/null
 if [ $? -eq 0 ]; then
 	echo "Well done, Apache 2 server installed! (tested at http://$(hostname -I))"
 else
-	echo "Oh snap, something went wrong while configuring Apache2!"
+	echo "Oh snap, something went wrong while configuring Apache2! (error code $?)"
 fi
 
-# read -p "Do you want to disable the default virtual host? [y/N] "
-# if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
-# 	# disable default vh
-# fi
+read -p "Do you want to disable the default virtual host? [y/N] "
+if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
+	sudo a2dissite 000-default
+	/etc/init.d/apache2 reload
+	if [ $? -eq 0 ]; then
+		echo "Default virtual host disabled."
+	else
+		echo "Oh snap, something went wrong while disabling default virtual host! (error code $?)"
+	fi
+fi
 
 
 ### PART 2: EFFICIENCY AND SECURITY ============================================
