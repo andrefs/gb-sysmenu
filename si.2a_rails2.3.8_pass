@@ -4,7 +4,7 @@
 echo "You will need the last version of rubygems. You can find it 
 at http://rubyforge.org/projects/rubygems/ (shoud be a tgz file)"
 read -p "Please provide a link to the last rubygems version [http://rubyforge.org/frs/download.php/74140/rubygems-1.5.0.tgz] " -e GEMSLINK
-if [ -z "$GEMSLINK" ]
+if [ -z "$GEMSLINK" ]; then
 	GEMSLINK="http://rubyforge.org/frs/download.php/74140/rubygems-1.5.0.tgz"
 fi
 
