@@ -118,5 +118,14 @@ if [[ -e $GF ]]; then
 	fi
 echo "Finished installing ruby gems with bundler."
 fi
+
+
+RAKEFILE=$(pwd)$(find $DOMR | grep -e "[Rr]akefile")
+if [ -n "$RAKEFILE" ]; then
+	cd $DOMR
+	rake db:migrate:reset && rake db:seed && rake db:test:clone
+	cd -	
+fi
+
 echo
 echo "Finished configuring $DOMAIN"
