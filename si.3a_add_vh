@@ -11,7 +11,7 @@ read -p "Do you want to clone an existing git repository? [y/N] "
 if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
 	read -p "Enter the git repository URL: " -e GITADDR
 	git clone $GITADDR $HOME/public_html/$DOMAIN
-	DOMR=$(pwd)$(find | grep "site_files$" | sed "s/^\.//")
+	DOMR=$(find $HOME/public_html/$DOMAIN | grep "site_files$" | sed "s/^\.//")
 	if [ -n "$DOMR" ]; then
 		mkdir -p $DOMR/{public,log,config}
 		if [ -e "$DOMR/config" ]; then
@@ -120,9 +120,10 @@ echo "Finished installing ruby gems with bundler."
 fi
 
 
-RAKEFILE=$(pwd)$(find $DOMR | grep -e "[Rr]akefile")
+RAKEFILE=$(pwd)$(find $DOMR | grep -e "site_files/[Rr]akefile")
 if [ -n "$RAKEFILE" ]; then
 	cd $DOMR
+	echo "Rebourning database!"
 	rake db:migrate:reset && rake db:seed && rake db:test:clone
 	cd -	
 fi
