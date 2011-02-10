@@ -85,6 +85,7 @@ if [[ "$REPLY" != "n" && "$REPLY" != "N" ]]; then
 		sudo openssl req -new -key server.key -out $DOMAIN.csr
 		sudo openssl x509 -req -days 730 -in $DOMAIN.csr -signkey server.key -out server.crt
 		SSLKEY=/etc/apache2/server.crt
+		cd -
 	else
 		echo "Not implemented yet."
 	fi
