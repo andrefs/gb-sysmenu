@@ -104,8 +104,8 @@ if [[ "$REPLY" != "n" && "$REPLY" != "N" ]]; then
 
   SSLEngine on
   SSLCipherSuite ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL
-  SSLCertificateFile /etc/apache2/$SSLFILE
-  SSLCertificateKeyFile /etc/apache2/$SSLKEY
+  SSLCertificateFile $SSLFILE
+  SSLCertificateKeyFile $SSLKEY
 
   # Custom log file locations
   LogLevel warn

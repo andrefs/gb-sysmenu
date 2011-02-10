@@ -54,7 +54,7 @@ fi
 read -p "Do you want to disable the default virtual host? [y/N] "
 if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
 	sudo a2dissite 000-default
-	/etc/init.d/apache2 reload
+	sudo /etc/init.d/apache2 reload
 	if [ $? -eq 0 ]; then
 		echo "Default virtual host disabled."
 	else
