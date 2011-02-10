@@ -71,7 +71,62 @@ echo "
   </Directory>
 
 </VirtualHost>
+
 " | sudo tee /etc/apache2/sites-available/$DOMAIN > /dev/null
+
+read -p "Do you want to configure this Virtual Host to use SSL? [Y/n] "
+if [[ "$REPLY" != "n" && "$REPLY" != "N" ]]; then
+	read -p "Do you want to generate new keys? [Y/n] "
+	if [[ "$REPLY" != "n" && "$REPLY" != "N" ]]; then
+		echo "Generating new RSA keys."
+		cd /etc/apache2
+		sudo openssl genrsa -des3 -out server.key 1024
+		SSLFILE=/etc/apache2/server.key
+		sudo openssl req -new -key server.key -out $DOMAIN.csr
+		sudo openssl x509 -req -days 730 -in $DOMAIN.csr -signkey server.key -out server.crt
+		SSLKEY=/etc/apache2/server.key
+	else
+		echo "Not implemented yet."
+	fi
+	sudo a2enmod ssl
+	echo "
+<VirtualHost *:443>
+
+  # Admin email, Server Name (domain name) and any aliases
+  ServerAdmin webmaster@$DOMAIN
+  ServerName  www.$DOMAIN
+  ServerAlias $DOMAIN
+
+  # Index file and Document Root (where the public files are located)
+  DirectoryIndex index.html
+  DocumentRoot $DOMR/public
+  RailsEnv production
+
+  SSLEngine on
+  SSLCipherSuite ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL
+  SSLCertificateFile /etc/apache2/$SSLFILE
+  SSLCertificateKeyFile /etc/apache2/$SSLKEY
+
+  # Custom log file locations
+  LogLevel warn
+  ErrorLog  $DOMR/log/error.log
+  CustomLog $DOMR/log/access.log combined
+
+  <Directory $DOMR/public>
+  Options -Indexes
+  Options -Includes
+  Options +SymLinksIfOwnerMatch
+  #Options -FollowSymLinks
+  AllowOverride All
+  Options -MultiViews
+  </Directory>
+
+</VirtualHost>
+
+" | sudo tee -a /etc/apache2/sites-available/$DOMAIN > /dev/null
+	echo "SSL configurated."
+	
+fi
 
 sudo /usr/sbin/a2ensite $DOMAIN
 sudo /etc/init.d/apache2 reload
@@ -119,14 +174,15 @@ if [[ -e $GF ]]; then
 echo "Finished installing ruby gems with bundler."
 fi
 
-
 RAKEFILE=$(pwd)$(find $DOMR | grep -e "site_files/[Rr]akefile")
 if [ -n "$RAKEFILE" ]; then
 	cd $DOMR
+	export RAILS_ENV=production
 	echo "Rebourning database!"
 	rake db:migrate:reset && rake db:seed && rake db:test:clone
 	cd -	
 fi
 
 echo
-echo "Finished configuring $DOMAIN"
+echo "Finished configuring $DOMAIN. You should run
+`export RAILS_ENV=production` or restart your bash."
