@@ -124,7 +124,6 @@ if [[ "$REPLY" != "n" && "$REPLY" != "N" ]]; then
 
 " | sudo tee -a /etc/apache2/sites-available/$DOMAIN > /dev/null
 	echo "Finished setting up SSL. Don't forget to write the appropriate code in your app!"
-	sudo /etc/init.d/apache2 reload	
 fi
 
 sudo /usr/sbin/a2ensite $DOMAIN
@@ -173,6 +172,8 @@ if [[ -e $GF ]]; then
 	fi
 echo "Finished installing ruby gems with bundler."
 fi
+
+set +e
 
 RAKEFILE=$(pwd)$(find $DOMR | grep -e "site_files/[Rr]akefile")
 if [ -n "$RAKEFILE" ]; then
