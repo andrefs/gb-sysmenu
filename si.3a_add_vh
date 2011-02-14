@@ -76,19 +76,15 @@ echo "
 
 read -p "Do you want to configure this Virtual Host to use SSL? [Y/n] "
 if [[ "$REPLY" != "n" && "$REPLY" != "N" ]]; then
-	read -p "Do you want to generate new keys? [Y/n] "
-	if [[ "$REPLY" != "n" && "$REPLY" != "N" ]]; then
-		echo "Generating new RSA keys."
-		cd /etc/apache2
-		sudo openssl genrsa -des3 -out server.key 1024
-		SSLFILE=/etc/apache2/server.key
-		sudo openssl req -new -key server.key -out $DOMAIN.csr
-		sudo openssl x509 -req -days 730 -in $DOMAIN.csr -signkey server.key -out server.crt
-		SSLKEY=/etc/apache2/server.crt
-		cd -
-	else
-		echo "Not implemented yet."
-	fi
+	echo "Generating new RSA keys."
+	mkdir -p "$HOME/ssl_keys/$DOMAIN"
+	cd "$HOME/ssl_keys/$DOMAIN"
+	sudo openssl genrsa -des3 -out server.key 1024
+	SSLFILE="$HOME/ssl_keys/$DOMAIN/server.key"
+	sudo openssl req -new -key server.key -out $DOMAIN.csr
+	sudo openssl x509 -req -days 730 -in $DOMAIN.csr -signkey server.key -out server.crt
+	SSLKEY="$HOME/ssl_keys/$DOMAIN/server.crt"
+	cd -
 	sudo a2enmod ssl
 	echo "
 <VirtualHost *:443>
@@ -125,7 +121,7 @@ if [[ "$REPLY" != "n" && "$REPLY" != "N" ]]; then
 </VirtualHost>
 
 " | sudo tee -a /etc/apache2/sites-available/$DOMAIN > /dev/null
-	echo "SSL configurated."
+	echo "Finished setting up SSL. Don't forget to write the appropriate code in your app!"
 	
 fi
 
