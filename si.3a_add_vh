@@ -83,10 +83,10 @@ if [[ "$REPLY" != "n" && "$REPLY" != "N" ]]; then
 	mkdir -p "$HOME/ssl_keys/$DOMAIN"
 	cd "$HOME/ssl_keys/$DOMAIN"
 	sudo openssl genrsa -des3 -out server.key 1024
-	SSLFILE="$HOME/ssl_keys/$DOMAIN/server.key"
+	SSLKEY="$HOME/ssl_keys/$DOMAIN/server.key"
 	sudo openssl req -new -key server.key -out $DOMAIN.csr
 	sudo openssl x509 -req -days 730 -in $DOMAIN.csr -signkey server.key -out server.crt
-	SSLKEY="$HOME/ssl_keys/$DOMAIN/server.crt"
+	SSLFILE="$HOME/ssl_keys/$DOMAIN/server.crt"
 	cd -
 	sudo a2enmod ssl
 	echo "
