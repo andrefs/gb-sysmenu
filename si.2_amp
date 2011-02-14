@@ -34,7 +34,7 @@ fi
 sudo /usr/sbin/apache2ctl graceful
 
 # Server name
-read -p "Enter the name for your server (something like demo.example.com): " -e SN
+read -p "Enter a name for your server: " -e SN
 echo -e "\nServerName $SN\n" > /tmp/ninjadmin
 sudo mv /tmp/ninjadmin /etc/apache2/conf.d/servername.conf
 

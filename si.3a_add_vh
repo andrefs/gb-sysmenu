@@ -6,7 +6,7 @@ mkdir -p "$HOME/public_html"
 sudo chmod -R a+rX $HOME/public_html
 sudo chmod a+rx $HOME
 
-read -p "Enter the domain name: (something like domain1.com) " -e DOMAIN
+read -p "Enter the domain name: (something like domain1.com or demo.domain2.com) " -e DOMAIN
 while [ -z "$DOMAIN" ]; do
 	read -p "Empty domain. Please enter a valid domain: " -e DOMAIN
 done
