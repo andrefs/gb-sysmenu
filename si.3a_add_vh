@@ -165,6 +165,7 @@ if [[ -e $GF ]]; then
 	read -p "Do you want to install the ruby gems this app needs? [Y/n]"
 	if [[ "$REPLY" != 'n' || "$REPLY" != 'N' ]]; then
 		cd $GFPATH
+		export RAILS_ENV=production
 		bundle install
 		cd -
 	fi
@@ -182,4 +183,4 @@ fi
 
 echo
 echo "Finished configuring $DOMAIN. You should run
-`export RAILS_ENV=production` or restart your bash."
+"export RAILS_ENV=production" or restart your bash."
