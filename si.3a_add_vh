@@ -175,7 +175,7 @@ fi
 RAKEFILE=$(pwd)$(find $DOMR | grep -e "site_files/[Rr]akefile")
 if [ -n "$RAKEFILE" ]; then
 	cd $DOMR
-	export RAILS_ENV=production
+	RAILS_ENV=production
 	echo "Rebourning database!"
 	rake db:migrate:reset && rake db:seed && rake db:test:clone
 	cd -	
