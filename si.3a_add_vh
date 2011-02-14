@@ -88,7 +88,6 @@ if [[ "$REPLY" != "n" && "$REPLY" != "N" ]]; then
 	sudo openssl x509 -req -days 730 -in $DOMAIN.csr -signkey server.key -out server.crt
 	SSLFILE="$HOME/ssl_keys/$DOMAIN/server.crt"
 	cd -
-	sudo a2enmod ssl
 	echo "
 <VirtualHost *:443>
 
@@ -183,6 +182,8 @@ if [ -n "$RAKEFILE" ]; then
 	rake db:migrate:reset && rake db:seed && rake db:test:clone
 	cd -	
 fi
+
+sudo /etc/init.d/apache2 restart
 
 echo
 echo "Finished configuring $DOMAIN. You should run

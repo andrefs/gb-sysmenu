@@ -62,6 +62,12 @@ if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
 	fi
 fi
 
+read -p "Do you want to configure Apache to allow HTTPS websites? [Y/n] "
+if [[ "$REPLY" != "n" && "$REPLY" != "N" ]]; then
+	sudo a2enmod ssl
+	sudo mv /etc/apache2/ports.conf{,.old}
+	sed "s/Listen 443/NameVirtualHost *443\n    Listen 443/" /etc/apache2/ports.conf.old | sudo tee /etc/apache2/ports.conf > /dev/null
+fi
 
 ### PART 2: EFFICIENCY AND SECURITY ============================================
 
