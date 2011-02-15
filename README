@@ -1,0 +1,43 @@
+Set of scripts to configure a fresh installed Ubuntu server (setting up user accounts, installing and configuring Apache, MySQL, PHP, Ruby, Rails, Passenger, and a bunch of other useful stuff as well).
+
+Features include:
+- Initial configuration
+	- Deactivate root account
+	- Create new user
+	- Add new user to sudoers file
+	- Configure SSH connections
+	- Set up a firewall
+	- Set up ssh keys to allow ssh key authentication
+- Installing and configuring Apache, MySQL and PHP
+	- Install phpMyAdmin
+	- Set up server name
+	- Disable default virtual host
+	- Preparing Apache for multiple virtual hosts
+	- Preparing Apache for allowing SSL on multiple virtual hosts
+	- Several security configurations
+- Installing and configuring Rails and Passenger
+	- Install latest version of RubyGems
+	- Install several RoR-related packages
+	- Install and configure Passenger
+	- Configure Apache to use Passenger (mod_rails)
+	- Enable necessary Apache modules
+- Add new Virtual Host
+	- Add barebone VH
+	- Add existing git project in autonomous VH
+	- Configure Apache for the new VH
+	- Configure Apache to allow SSL in the new VH
+	- Automatically create MySQL database for the new VH
+	- Automatically install all the Ruby gems needed by the app
+	- Initialize database for the new VH
+- Remove existing VH
+	- LIst existing VH
+	- Drop VH database
+	- Remove VH folder
+	- Remove VH files from sites-available and sites-enabled
+- Backup existing VH
+	- Dump database to compressed file
+	- Copy and compress critical folders
+	- Generate single compressed file with backup data
+- Restore VH
+	- Restore database
+	- REstore critical folders
