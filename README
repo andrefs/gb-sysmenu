@@ -23,21 +23,21 @@ Features include:
 	- Enable necessary Apache modules
 - Add new Virtual Host
 	- Add barebone VH
-	- Add existing git project in autonomous VH
+	- Create VH from existing git repository
 	- Configure Apache for the new VH
 	- Configure Apache to allow SSL in the new VH
 	- Automatically create MySQL database for the new VH
 	- Automatically install all the Ruby gems needed by the app
 	- Initialize database for the new VH
 - Remove existing VH
-	- LIst existing VH
+	- List existing VH
 	- Drop VH database
 	- Remove VH folder
-	- Remove VH files from sites-available and sites-enabled
+	- Remove VH files from sites-available and sites-enabled folders
 - Backup existing VH
 	- Dump database to compressed file
 	- Copy and compress critical folders
 	- Generate single compressed file with backup data
 - Restore VH
 	- Restore database
-	- REstore critical folders
+	- Restore critical folders
