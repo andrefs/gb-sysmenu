@@ -18,12 +18,16 @@ if [ "$NUMBER" == "0" ]; then
 fi
 SITE=$(ls -1 /etc/apache2/sites-available | head -$NUMBER | tail -1)
 
-echo "This will delete site $SITE and all its data."
+echo "This will delete site $SITE and all its data (ssl_keys and backups too)."
 read -p "Are you sure you want to proceed? [y/N] "
 if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
 	echo "sudo a2dissite $SITE"
 	sudo a2dissite $SITE
-	sudo rm -rf /etc/apache2/sites-available/$SITE /etc/apache2/sites-enabled/$SITE $HOME/public_html/$SITE
+	sudo rm -rf /etc/apache2/sites-available/$SITE
+	sudo rm -rf /etc/apache2/sites-enabled/$SITE
+	sudo rm -rf $HOME/public_html/$SITE
+	sudo rm -rf $HOME/ssl_keys/$SITE
+	sudo rm -rf $HOME/backups/$SITE 
 	/etc/init.d/apache2 reload
 	echo "Site removed."
 	read -p "Do you also want to remove the database? [y/N] "
