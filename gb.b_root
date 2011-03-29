@@ -13,7 +13,7 @@ sudoers file and deactivate the root account.
 "
 
 read -p "Do you wish to proceed? [Y/n] " -e PROC
-if [ "$PROC" == "n" || "$PROC" == "N" ]; then
+if [[ "$PROC" == "n" || "$PROC" == "N" ]]; then
 	echo -e "\nScript execution canceled."
 	exit 1
 fi
@@ -109,9 +109,9 @@ fi
 # Set the hostname and add it to /etc/hosts
 echo "$HN" > /etc/hostname
 hostname -F /etc/hostname
-cp /etc/hosts /etc/hosts.bak
+# cp /etc/hosts /etc/hosts.bak
 # sed "s/127.0.0.1 localhost/127.0.0.1 localhost\n109.74.205.80 $HN/" /etc/hosts.bak > /etc/hosts
-perl -pi -e 's/127.0.0.1 localhost/127.0.0.1 localhost\n109.74.205.80 $HN/' /etc/hosts
+perl -pi.bak -e 's/127.0.0.1 localhost/127.0.0.1 localhost\n109.74.205.80 $HN/' /etc/hosts
 
 # Activate bash completion (if not working)
 apt-get install aptitude
@@ -297,8 +297,8 @@ ssh -p $SSHPN $UN@$ADDR <<SIEND2
 # Deactivate root account ($UN can still run 'sudo -s')
 echo $PASS | sudo -S passwd -l root
 $UTILS
-git clone git://github.com/andrefs/servinit.git ~/.servinit -b other/simonserver
-cd ~/.servinit
+git clone git://github.com/andrefs/gb-sysmenu.git ~/.gb-sysmenu
+cd ~/.gb-sysmenu
 for i in \$(ls .); do echo $PASS | sudo -S ln -s -f \$(pwd)/\$i /usr/local/bin/\$i ; done
 chmod +x si.*
 cd -
@@ -315,7 +315,7 @@ user $UN by running \`ssh -p $SSHPN $UN@$ADDR\`
 =pod
 =head1 NAME
 
-   si.b_root - Servinit script to do the initial configuration in a Ubuntu
+   gb.b_root - gb-sysmenu script to do the initial configuration in a Ubuntu
 			   linux server.
 
 =head1 SYNOPSIS
@@ -323,8 +323,6 @@ user $UN by running \`ssh -p $SSHPN $UN@$ADDR\`
 =head1 DESCRIPTION
 
 =head1 SEE ALSO
-
-si.2_amp 
 
 =head1 LICENSE
 
