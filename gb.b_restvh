@@ -62,6 +62,7 @@ if [ -e $BAKFOLDER/system.tar.gz ]; then
 	tar -C $HOME/public_html/$SITE/site_files/system xvzf $BAKFOLDER/system.tar.gz
 fi
 
+rm -rf $BAKFOLDER
 mv $BAKFOLDER.tar $HOME/backups/$SITE/
 echo "Restore completed."
 
