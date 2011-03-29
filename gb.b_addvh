@@ -162,8 +162,8 @@ fi
 GF="$DOMR/Gemfile"
 if [[ -e $GF ]]; then
 	GFPATH=$(dirname $GF)
-	read -p "Do you want to install the ruby gems this app needs? [Y/n]"
-	if [[ "$REPLY" != 'n' || "$REPLY" != 'N' ]]; then
+	read -p "Do you want to install the ruby gems this app needs? [Y/n] "
+	if [[ "$REPLY" != "n" && "$REPLY" != "N" ]]; then
 		cd $GFPATH
 		export RAILS_ENV=production
 		bundle install
