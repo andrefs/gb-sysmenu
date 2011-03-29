@@ -22,8 +22,8 @@ else
 	echo "Could not find database.yml file in $SITE folders."
 fi
 
-BAKFOLDER=$SITE.bak.$(date +%Y%m%d_%H%M)
-mkdir $BAKFOLDER
+BAKFOLDER=$HOME/backups/$SITE/$SITE.bak.$(date +%Y%m%d_%H%M)
+mkdir -p "$BAKFOLDER"
 echo "Dumping database $DBNAME to file."
 mysqldump --add-drop-database --add-drop-table -u $DBUSER -p$DBPASS $DBNAME | gzip -9 -c > $BAKFOLDER/$DBNAME.sql.gz 
 
