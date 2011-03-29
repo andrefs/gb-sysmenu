@@ -282,7 +282,7 @@ sudo aptitude update -y
 sudo aptitude safe-upgrade -y
 sudo aptitude install subversion subversion-tools git-core w3m  mlocate sqlite3 screen gcc build-essential -y
 
-echo -e "\nalias si.2a_rails=\"si.2a_rails2.3.8_pass && exec bash\"\n" >>  /home/$UN/.bashrc
+echo -e "\nalias si.b_rails=\"si.b_rails2.3.8_pass && exec bash\"\n" >>  /home/$UN/.bashrc
 SIEND1
 
 read -p "Do you want to install utils-menu on your server? [y/N] "
