@@ -53,8 +53,8 @@ if [ -e $HOME/public_html/$SITE/site_files/assets ]; then
 fi
 
 # Create final tar file
-cd 
-tar cvf $HOME/backups/$SITE/$BAKFOLDER.tar $BAKFOLDER
+cd $HOME/backups/$SITE 
+tar cvf $BAKFOLDER.tar $BAKFOLDER
 if [ $? -ne 0 ]; then
 	echo "Could not create final compressed file. Will not remove folder $BAKFOLDER"
 else
