@@ -54,7 +54,7 @@ fi
 
 # Create final tar file
 cd $HOME/backups/$SITE 
-tar cvf $BAKFOLDER.tar $BAKFOLDER
+tar cvf $BAKFOLDER.tar $BAKFOLDER/*
 if [ $? -ne 0 ]; then
 	echo "Could not create final compressed file. Will not remove folder $BAKFOLDER"
 else
