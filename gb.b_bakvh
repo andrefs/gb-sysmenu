@@ -26,8 +26,9 @@ else
 	echo "Could not find database.yml file in $SITE folders."
 fi
 
-# Create backup folder
-BAKFOLDER=$HOME/backups/$SITE/$SITE.bak.$(date +%Y%m%d_%H%M)
+# Change to backups folder and create new folder
+cd $HOME/backups/$SITE 
+BAKFOLDER=$SITE.bak.$(date +%Y%m%d_%H%M)
 mkdir -p "$BAKFOLDER"
 
 # Dump database to .sql.gz file
@@ -37,7 +38,7 @@ mysqldump --add-drop-database --add-drop-table -u $DBUSER -p$DBPASS $DBNAME | gz
 # Create archive from site_files/system
 if [ -e $HOME/public_html/$SITE/site_files/system ]; then
 	echo "Copying and compressing $SITE/site_files/system folder."
-	cd "$HOME/public_html/$SITE/site_files"
+	cd "site_files"
 	tar cvzf $BAKFOLDER/system.tar.gz system
 	cd -
 fi
@@ -45,12 +46,13 @@ fi
 # Create archive from site_files/assets
 if [ -e $HOME/public_html/$SITE/site_files/assets ]; then
 	echo "Copying and compressing $SITE/site_files/assets folder."
-	cd "$HOME/public_html/$SITE/site_files"
+	cd "site_files"
 	tar cvzf $BAKFOLDER/assets.tar.gz assets
 	cd -
 fi
 
 # Create final tar file
+cd 
 tar cvf $BAKFOLDER.tar $BAKFOLDER
 if [ $? -ne 0 ]; then
 	echo "Could not create final compressed file. Will not remove folder $BAKFOLDER"
@@ -58,4 +60,6 @@ else
 	rm -r $BAKFOLDER
 	echo "Backup file for site $SITE saved as $BAKFOLDER.tar"
 fi
+
+cd
 
