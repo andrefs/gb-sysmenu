@@ -13,13 +13,15 @@ sudoers file and deactivate the root account.
 "
 
 read -p "Do you wish to proceed? [Y/n] " -e PROC
-if [ "$PROC" == "n" ]; then
+if [ "$PROC" == "n" || "$PROC" == "N" ]; then
 	echo -e "\nScript execution canceled."
 	exit 1
 fi
 
 read -p "What is the address of the server you wish to configure? " -e ADDR
 ssh-keygen -R $ADDR
+echo
+read -p "Enter the hostname to be attributed to your server: " -e HN
 echo
 read -p "Enter a new username for the regular account: " -e UN
 while [ -z "$UN" ]; do
@@ -47,14 +49,13 @@ while [ $GO -ne 1 ]; do
 done
 echo -e "\nPlease provide information for the new user $UN."
 INFO="n"
-#while [[ "$INFO" != 'y'  && "$INFO" != 'Y' && -n "$INFO" ]]; do
 while [[ "$INFO" == 'n'  || "$INFO" == 'N' ]]; do
 	echo "Enter the desired value, or press ENTER for the default"
-	read -p "	Full Name []: " -e $FN
-	read -p "	Room Number []: " -e $RN
-	read -p "	Work Phone []: " -e $WP
-	read -p "	Home Phone []: " -e $HP
-	read -p "	Other []: " -e $OT
+	read -p "	Full Name []: " -e FN
+	read -p "	Room Number []: " -e RN
+	read -p "	Work Phone []: " -e WP
+	read -p "	Home Phone []: " -e HP
+	read -p "	Other []: " -e OT
 	read -p "Is the information correct? [Y/n] " -e INFO
 done
 
@@ -105,6 +106,13 @@ if [ -n "$SSHPUB" ]; then
 	chmod 600 /home/$UN/.ssh/authorized_keys
 fi
 
+# Set the hostname and add it to /etc/hosts
+echo "$HN" > /etc/hostname
+hostname -F /etc/hostname
+cp /etc/hosts /etc/hosts.bak
+# sed "s/127.0.0.1 localhost/127.0.0.1 localhost\n109.74.205.80 $HN/" /etc/hosts.bak > /etc/hosts
+perl -pi -e 's/127.0.0.1 localhost/127.0.0.1 localhost\n109.74.205.80 $HN/' /etc/hosts
+
 # Activate bash completion (if not working)
 apt-get install aptitude
 aptitude install bash-completion
@@ -119,7 +127,7 @@ echo -e "\n\n# enable programmable completion features\nif [ -f /etc/bash_comple
 # enable bash completion in interactive shells
 echo -e "\n\n# enable bash completion in interactive shells\nif [ -f /etc/bash_completion ] && ! shopt -oq posix; then\n    . /etc/bash_completion\nfi\n" >> /etc/bash.bashrc
 
-#Allow user to make sudo (!= from being root!!!)
+# Allow user to make sudo (!= from being root!!!)
 echo "$UN ALL=(ALL) ALL" >> /etc/sudoers
 
 # SSH configuration (IMPORTANT: Port = $SSHPN)
@@ -307,7 +315,7 @@ user $UN by running \`ssh -p $SSHPN $UN@$ADDR\`
 =pod
 =head1 NAME
 
-   si.1_root - Servinit script to do the initial configuration in a Ubuntu
+   si.b_root - Servinit script to do the initial configuration in a Ubuntu
 			   linux server.
 
 =head1 SYNOPSIS
