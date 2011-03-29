@@ -40,7 +40,7 @@ DROP DATABASE IF EXISTS $DBNAME;
 MSEND
 	echo "Database removed."
 	echo "Restarting apache."
-	/etc/init.d/apache2 restart
+	sudo /etc/init.d/apache2 restart
 	fi
 fi
 		
