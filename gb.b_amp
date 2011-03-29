@@ -25,7 +25,9 @@ if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
 fi
 wget http://$(hostname -I)/phpmyadmin -O /dev/null
 if [ $? -eq 0 ]; then
-	echo "Well done, phpMyAdmin is installed! (tested at http://$(hostname -I)/phpmyadmin)"
+	$HNAME=$(hostname -I)
+	$HNAME=${HNAME/ /}
+	echo "Well done, phpMyAdmin is installed! (tested at http://$HNAME/phpmyadmin)"
 else
 	echo "Oh snap, something went wrong while configuring phpMyAdmin! (error code $?)"
 fi
