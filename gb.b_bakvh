@@ -27,6 +27,7 @@ else
 fi
 
 # Change to backups folder and create new folder
+mkdir -p $HOME/backups/$SITE 
 cd $HOME/backups/$SITE 
 BAKFOLDER=$SITE.bak.$(date +%Y%m%d_%H%M)
 mkdir -p "$BAKFOLDER"
