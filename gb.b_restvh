@@ -29,7 +29,7 @@ fi
 # Confirmation check
 SITE=$(ls -1 /etc/apache2/sites-available | head -$NUMBER | tail -1)
 read -p "This will overwrite some folders and the database from site $SITE. Are you sure you want to proceed? [Y/n] "
-if [ "$REPLY" == "n" || "$REPLY" == "N" ]; then
+if [[ "$REPLY" == "n" || "$REPLY" == "N" ]]; then
     echo "Operation canceled."
     exit 0
 fi
