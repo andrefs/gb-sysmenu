@@ -28,18 +28,19 @@ if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
 	sudo rm -rf $HOME/public_html/$SITE
 	sudo rm -rf $HOME/ssl_keys/$SITE
 	sudo rm -rf $HOME/backups/$SITE 
-	/etc/init.d/apache2 reload
 	echo "Site removed."
 	read -p "Do you also want to remove the database? [y/N] "
 	if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
 		DBNAME=`echo $SITE | sed 's/[^a-zA-Z_]/_/g' | head -c 60`
 		DBUSER="`echo ${DBNAME} | head -c 14`_u"
-		"Connecting to MySQL to remove database and user. MySQL root password will be needed."
+		echo "Connecting to MySQL to remove database and user. MySQL root password will be needed."
 		mysql -u root -p <<MSEND
 DROP USER '$DBUSER'@'localhost';
 DROP DATABASE IF EXISTS $DBNAME;
 MSEND
 	echo "Database removed."
+	echo "Restarting apache."
+	/etc/init.d/apache2 restart
 	fi
 fi
 		

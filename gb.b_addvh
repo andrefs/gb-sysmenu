@@ -132,33 +132,32 @@ sudo /etc/init.d/apache2 reload
 read -p "Do you want to create a MySQL database for this domain? [Y/n] "
 if [[ "$REPLY" == "n" || "$REPLY" == "N" ]]; then
 	echo "Finished configuring $DOMAIN"
-	exit 0
-fi
-
-DBNAME=`echo $DOMAIN | sed 's/[^a-zA-Z0-9_]/_/g' | head -c 60`
-DBUSER="`echo ${DBNAME} | head -c 14`_u"
-p1=$(cat /dev/urandom | tr -dc bcdfghjklmnpqrstvxz | head -c 1)
-p2=$(cat /dev/urandom | tr -dc aeiou | head -c 1)
-p3=$(cat /dev/urandom | tr -dc bcdfghjklmnpqrstvxz | head -c 1)
-p4=$(cat /dev/urandom | tr -dc aeiou | head -c 1)
-DBPASS=${DBNAME}_$p1$p2$p3$p4
-echo "Please enter the root password for MySQL:"
-echo "Connecting to MySQL to create database and user. MySQL root password will be needed."
-mysql -u root -p <<MSEND
+else
+	DBNAME=`echo $DOMAIN | sed 's/[^a-zA-Z0-9_]/_/g' | head -c 60`
+	DBUSER="`echo ${DBNAME} | head -c 14`_u"
+	p1=$(cat /dev/urandom | tr -dc bcdfghjklmnpqrstvxz | head -c 1)
+	p2=$(cat /dev/urandom | tr -dc aeiou | head -c 1)
+	p3=$(cat /dev/urandom | tr -dc bcdfghjklmnpqrstvxz | head -c 1)
+	p4=$(cat /dev/urandom | tr -dc aeiou | head -c 1)
+	DBPASS=${DBNAME}_$p1$p2$p3$p4
+	echo "Please enter the root password for MySQL:"
+	echo "Connecting to MySQL to create database and user. MySQL root password will be needed."
+	mysql -u root -p <<MSEND
 CREATE DATABASE $DBNAME ;
 GRANT ALL PRIVILEGES ON $DBNAME.* TO '$DBUSER'@'localhost' IDENTIFIED BY '$DBPASS';
 FLUSH PRIVILEGES;
 MSEND
-
-echo "Created database $DBNAME with user $DBUSER and password $DBPASS."
-echo "production:
-  adapter: mysql
-  database: $DBNAME
-  username: $DBUSER
-  password: $DBPASS
-  host: localhost" > $DOMR/config/database.yml
-echo "Please write down this data, you may need it later."
-echo
+	
+	echo "Created database $DBNAME with user $DBUSER and password $DBPASS."
+	echo "production:
+	  adapter: mysql
+	  database: $DBNAME
+	  username: $DBUSER
+	  password: $DBPASS
+	  host: localhost" > $DOMR/config/database.yml
+	echo "Please write down this data, you may need it later."
+	echo
+fi
 
 GF="$DOMR/Gemfile"
 if [[ -e $GF ]]; then
