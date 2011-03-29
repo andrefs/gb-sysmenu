@@ -300,7 +300,7 @@ $UTILS
 git clone git://github.com/andrefs/gb-sysmenu.git ~/.gb-sysmenu
 cd ~/.gb-sysmenu
 for i in \$(ls .); do echo $PASS | sudo -S ln -s -f \$(pwd)/\$i /usr/local/bin/\$i ; done
-chmod +x si.*
+chmod +x gb.*
 cd -
 SIEND2
 
