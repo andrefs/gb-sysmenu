@@ -31,7 +31,7 @@ if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
 	echo "Site removed."
 	read -p "Do you also want to remove the database? [y/N] "
 	if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
-		DBNAME=`echo $SITE | sed 's/[^a-zA-Z_]/_/g' | head -c 60`
+		DBNAME=`echo $SITE | sed 's/[^a-zA-Z0-9_]/_/g' | head -c 60`
 		DBUSER="`echo ${DBNAME} | head -c 14`_u"
 		echo "Connecting to MySQL to remove database and user. MySQL root password will be needed."
 		mysql -u root -p <<MSEND
