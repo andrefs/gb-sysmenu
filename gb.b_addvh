@@ -40,6 +40,8 @@ else
 	" > $DOMR/public/index.html
 fi
 
+ESCDOM=${DOMAIN//./\\.}
+
 echo "
 # Place any notes or comments you have here
 # It will make any customization easier to understand in the weeks to come
@@ -53,6 +55,11 @@ echo "
   ServerAdmin webmaster@$DOMAIN
   ServerName  www.$DOMAIN
   ServerAlias $DOMAIN
+
+  RewriteEngine on
+  RewriteCond %{HTTP_HOST} ^($ESCDOM)(:80)? [NC]
+  RewriteRule ^(.*) http://www.$DOMAIN\$1 [R=301,L]
+  #order deny,allow
 
   # Index file and Document Root (where the public files are located)
   DirectoryIndex index.html
