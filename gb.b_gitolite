@@ -45,7 +45,7 @@ for u in $SSHUSERS; do
 	LINE=$(grep $u $HOME/.ssh/authorized_keys)
 	PUBKEYFILE="/tmp/$u.pub"
 	echo $LINE > $PUBKEYFILE
-	gl-setup $PUBKEYFILE
+	su - git -c "gl-setup $PUBKEYFILE"
 done
 	
 
