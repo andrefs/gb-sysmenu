@@ -2,7 +2,7 @@
 
 # Create git user
 read -p "Username for the gitolite user: [git] " -e UN
-if [ -z "$USER" ]; then
+if [ -z "$UN" ]; then
 	UN=git
 fi
 
