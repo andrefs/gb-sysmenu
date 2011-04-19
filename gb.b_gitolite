@@ -45,6 +45,7 @@ for u in $SSHUSERS; do
 	LINE=$(grep $u $HOME/.ssh/authorized_keys)
 	PUBKEYFILE="/tmp/$u.pub"
 	echo $LINE > $PUBKEYFILE
+	echo "Sudo password for user $UN will be needed."
 	su - git -c "gl-setup $PUBKEYFILE"
 done
 	
