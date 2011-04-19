@@ -30,7 +30,7 @@ sudo perl -pi -e "s/(AllowUsers.*$)/\$1 $UN/ unless /$UN/" /etc/ssh/sshd_config
 sudo /etc/init.d/ssh restart
 
 sudo su - -- -c '
-cd \$HOME 
+cd $HOME 
 git clone git://github.com/sitaramc/gitolite gitolite-source
 cd gitolite-source
 # now checkout whatever branch you want; for early adopters I suggest
