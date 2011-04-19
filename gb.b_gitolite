@@ -26,7 +26,7 @@ done
 
 echo -e "$PASS\n$PASS\n$FN\n$RN\n$WP\n$HP\n$OT\ny\n" | sudo adduser $UN 
 
-perl -pi -e "s/(AllowUsers.*$)/\$1 $USER/" /etc/ssh/sshd_config
+sudo perl -pi -e "s/(AllowUsers.*$)/\$1 $USER/" /etc/ssh/sshd_config
 sudo /etc/init.d/ssh restart
 
 sudo su - -- -c '
