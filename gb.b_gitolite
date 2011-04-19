@@ -41,6 +41,7 @@ src/gl-system-install /usr/local/bin /usr/local/share/gitolite/conf /usr/local/s
 
 SSHUSERS=$(perl -p -e 's/^.*==\s*(.*?)@.*?\s*$/$1\n/' $HOME/.ssh/authorized_keys)
 for u in $SSHUSERS; do
+	echo "Setting up user $u"
 	LINE=$(grep $u $HOME/.ssh/authorized_keys)
 	PUBKEYFILE="/tmp/$u.pub"
 	echo $LINE > $PUBKEYFILE
