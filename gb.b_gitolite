@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# Create git user
+read -p "Username for the gitolite user: [git] " -e UN
+if [ -z "$USER" ]; then
+	UN=git
+fi
+
+GO=0
+while [ $GO -ne 1 ]; do
+    read -p "Enter new UNIX password for user $UN: " -s -e PASS
+    echo
+    read -p "Retype new UNIX password for user $UN: " -s -e PASSCONF
+    echo
+    if [ "$PASS" == "$PASSCONF" ]; then
+        GO=1
+        if [ -z "$PASS" ]; then
+            echo "No password supplied."
+            GO=0    
+        fi  
+    else
+        echo "Sorry, passwords do not match."
+        GO=0
+    fi
+done
+
+echo -e "$PASS\n$PASS\n$FN\n$RN\n$WP\n$HP\n$OT\ny\n" | sudo adduser $UN 
+
+perl -pi -e "s/(AllowUsers.*$)/\$1 $USER/" /etc/ssh/sshd_config
+sudo /etc/init.d/ssh restart
+
+sudo su - -- -c '
+cd \$HOME 
+git clone git://github.com/sitaramc/gitolite gitolite-source
+cd gitolite-source
+# now checkout whatever branch you want; for early adopters I suggest
+# "pu", as in "git checkout -t origin/pu" for recent gits
+mkdir -p /usr/local/share/gitolite/conf /usr/local/share/gitolite/hooks
+src/gl-system-install /usr/local/bin /usr/local/share/gitolite/conf /usr/local/share/gitolite/hooks
+'
+
+SSHUSERS=$(perl -p -e 's/^.*==\s*(.*?)@.*?\s*$/$1\n/' $HOME/.ssh/authorized_keys)
+for u in $SSHUSERS; do
+	LINE=$(grep $u $HOME/.ssh/authorized_keys)
+	PUBKEYFILE="/tmp/$u.pub"
+	echo $LINE > $PUBKEYFILE
+	gl-setup $PUBKEYFILE
+done
+	
+
