@@ -52,6 +52,14 @@ if [ -e $HOME/public_html/$SITE/site_files/assets ]; then
 	cd -
 fi
 
+# Create archive from site_files/assets
+if [ -e $HOME/public_html/$SITE/site_files/assets ]; then
+	echo "Copying and compressing $SITE/site_files/assets folder."
+	cd "site_files"
+	tar cvzf $BAKFOLDER/assets.tar.gz assets
+	cd -
+fi
+
 # Create final tar file
 cd $HOME/backups/$SITE 
 tar cvf $BAKFOLDER.tar $BAKFOLDER/*
