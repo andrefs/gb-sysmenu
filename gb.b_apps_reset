@@ -23,6 +23,21 @@ for gitf in $(ls *.yml); do
 		echo "No new changes to '$site'!"
 	fi
 done
-echo "${chgdlist[@]-}"
+# echo "${chgdlist[@]-}"
+
+echo "The config files for these sites have changed. Which one do you want to update? [Cancel] "
+printf "%s\n" "${chgdlist[@]-}" | cat <(echo "All") - | perl -plne 's/^.*\///' | nl -v0 | perl -plne 's/\s+(\d+)\s+/ [$1] /g'
+
+# ls -1 /etc/apache2/sites-available | nl | perl -plne 's/\s+(\d+)\s+/ [$1] /g'
+# read -p "Which one do you want to change? [0 to quit] " -e NUMBER
+# while ! [[ "$NUMBER" =~ ^[0-9]+$ ]]; do
+#     echo "$NUMBER is not a valid number."
+#     ls -1 /etc/apache2/sites-available | nl | perl -plne 's/\s+(\d+)\s+/ [$1] /g'
+#     read -p "Please enter the number of the site you want to change: [0 to quit] " -e NUMBER
+# done
+# if [ "$NUMBER" == "0" ]; then
+#     echo "Operation canceled."
+#     exit 0
+# fi
 
 
