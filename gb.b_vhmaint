@@ -1,4 +1,4 @@
-#!/usr/bin/env perl
+#!/bin/bash
 # Toggles "site under maintenance" page on a vhost
 
 echo "You currently have this sites on your sites-available directory:"
