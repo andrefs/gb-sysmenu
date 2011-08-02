@@ -11,7 +11,8 @@ fi
 
 CURSITE=$("$GBSYSMENUPATH/gb.a_location")
 
-echo "You currently have this sites on your sites-available directory:"
+echo "Here's the list of sites in your sites-available directory."
+echo "Please pick an option:"
 for site in  $(ls -1 /etc/apache2/sites-available); do
          if [ -e "$HOME/public_html/$site/site_files/public/index.html" ]; then
                  site=" [MAINT]\t$site\n"
@@ -23,11 +24,16 @@ done
 
 if [ -n "$CURSITE" ]; then
 	if [ -e "$HOME/public_html/$CURSITE/site_files/public/index.html" ]; then
-	        CURSITE=" [MAINT]\t$CURSITE\n"
+	        CURSITE=" [MAINT]\t$CURSITE\n\n"
 	else    
-	        CURSITE=" [UP]\t$CURSITE\n"
+	        CURSITE=" [UP]\t$CURSITE\n\n"
 	fi 
-	echo -e "${sitelist[@]}" |  nl -v0 | perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g' | cat <(echo -e "[ENTER] $CURSITE\n") - | column -c 3 -t
+	echo -e "${sitelist[@]}" |\
+		 nl -v0 |\
+		 perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g' |\
+		 cat <(echo -e "[Enter] $CURSITE\n") - |\
+		 cat <(echo; echo "[A] All"; echo "[X] Cancel") |\
+		 column -c 3 -t
 else
 	echo -e "${sitelist[@]}" | cat <(echo -e "All\n") - | nl -v0 | perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g' | column -c 3 -t
 fi
