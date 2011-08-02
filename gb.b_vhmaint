@@ -28,9 +28,9 @@ if [ -n "$CURSITE" ]; then
 	else    
 	        CURSITE=" [UP]\t$site\n"
 	fi 
-	echo -e "${sitelist[@]}" | cat <(echo -e "[ENTER] $CURSITE\n") - | nl -v0 | perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g' | column -c -t 3 
+	echo -e "${sitelist[@]}" | cat <(echo -e "[ENTER] $CURSITE\n") - | nl -v0 | perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g' | column -c 3 -t
 else
-	echo -e "${sitelist[@]}" | cat <(echo -e "All\n") - | nl -v0 | perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g' | column -c -t 3 
+	echo -e "${sitelist[@]}" | cat <(echo -e "All\n") - | nl -v0 | perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g' | column -c 3 -t
 fi
 
 read -p "Choose a site to toggle its maintenance status: " -e NUMBER
