@@ -23,9 +23,9 @@ done
 
 if [ -n "$CURSITE" ]; then
 	if [ -e "$HOME/public_html/$CURSITE/site_files/public/index.html" ]; then
-	        CURSITE=" [MAINT]\t$site\n"
+	        CURSITE=" [MAINT]\t$CURSITE\n"
 	else    
-	        CURSITE=" [UP]\t$site\n"
+	        CURSITE=" [UP]\t$CURSITE\n"
 	fi 
 	echo -e "${sitelist[@]}" |  nl -v0 | perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g' | cat <(echo -e "[ENTER] $CURSITE\n") - | column -c 3 -t
 else
