@@ -27,7 +27,7 @@ if [ -n "$CURSITE" ]; then
 	else    
 	        CURSITE=" [UP]\t$site\n"
 	fi 
-	echo -e "${sitelist[@]}" | cat <(echo -e "[ENTER] $CURSITE\n") - | nl -v0 | perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g' | column -c 3 -t
+	echo -e "${sitelist[@]}" |  nl -v0 | perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g' | cat <(echo -e "[ENTER] $CURSITE\n") - | column -c 3 -t
 else
 	echo -e "${sitelist[@]}" | cat <(echo -e "All\n") - | nl -v0 | perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g' | column -c 3 -t
 fi
