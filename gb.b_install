@@ -22,7 +22,7 @@ while [[ -z "$REPOPATH" || ! -d "$REPOPATH" || ! -e "$REPOPATH/.gb-sysmenu-repo-
 	echo "Please enter a valid path: "
 	read -e REPOPATH
 done
-
+REPOPATH=${REPOPATH%/}
 
 if [ -z "$GBSYSMENUPATH" ]; then
 	export GBSYSMENUPATH="$REPOPATH"
@@ -32,7 +32,7 @@ if [ -z "$GBSYSMENUPATH" ]; then
 		echo "source '$REPOPATH/gbsysmenurc'" >> "$HOME/.bashrc"
 	fi
 	echo "export GBSYSMENUPATH='$GBSYSMENUPATH'" > "$REPOPATH/gbsysmenurc"
-	echo "PATH=\"\$PATH:$GBSYSMENUPATH\"" >> "$REPOPATH/gbsysmenurc"
+	echo "PATH=\"\$PATH:\$GBSYSMENUPATH\"" >> "$REPOPATH/gbsysmenurc"
 fi
 
 cd "$GBSYSMENUPATH"
