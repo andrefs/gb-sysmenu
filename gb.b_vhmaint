@@ -3,31 +3,36 @@
 
 echo "You currently have this sites on your sites-available directory:"
 for site in  $(ls -1 /etc/apache2/sites-available); do
-	if [ -e "$HOME/public_html/$site/site_files/public/index.html" ]; then
-		$site=" [MAINT]\t$site"
-	else
-		$site=" [UP]\t$site"
- 	sitelist=(${sitelist[@]-} $site)
+         if [ -e "$HOME/public_html/$site/site_files/public/index.html" ]; then
+                 site=" [MAINT]\t$site\n"
+         else
+                 site=" [UP]\t$site\n"
+         fi
+		site="[CENAS] $site\n"
+        sitelist=(${sitelist[@]-} "$site")
 done
-		
-printf "%s\n" "${YMLLIST[@]}" | cat <(echo "Cancel.") - | nl -v0 | perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g'
 
-		
+#printf "%s\n" "${sitelist[@]}"
+echo -e "${sitelist[@]}" | sed 's/^\s\+//' | cat <(echo -e "All\n") - | nl -v0 | perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g' | column -c 3 
 
-
-# | nl | perl -plne 's/\s+(\d+)\s+/ [$1] /g'
-#ls -1 /etc/apache2/sites-available | nl | perl -plne 's/\s+(\d+)\s+/ [$1] /g'
-#
-#read -p "Please enter the number of the site you want to remove: [0 to quit] " -e NUMBER
-#while ! [[ "$NUMBER" =~ ^[0-9]+$ ]]; do
-#    echo "$NUMBER is not a valid number."
-#    ls -1 /etc/apache2/sites-available | nl | perl -plne 's/\s+(\d+)\s+/ [$1] /g'
-#    read -p "Please enter the number of the site you want to remove: [0 to quit] " -e NUMBER
-#done
-#if [ "$NUMBER" == "0" ]; then
-#    echo "Operation canceled."
-#    exit 0
-#fi
-#SITE=$(ls -1 /etc/apache2/sites-available | head -$NUMBER | tail -1)
+read -p "Choose a site to toggle its maintenance status: [X to quit] " -e NUMBER
+while ! [[ "$NUMBER" =~ ^[0-9]+$ ]]; do
+	if [[ "$NUMBER" == "X" ||	"$NUMBER" == "x" ]]; then
+		exit 0
+	else
+    	echo "'$NUMBER' is not a valid number."
+		echo -e "${sitelist[@]}" | sed 's/^\s\+//' | cat <(echo -e "All\n") - | nl -v0 | perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g' 
+		read -p "Choose a site to toggle its maintenance status: [X to quit] " -e NUMBER
+	fi
+done
+if [ "$NUMBER" != "0" ]; then
+	#SITE=$(ls -1 /etc/apache2/sites-available | head -$NUMBER | tail -1)
+	SITE=$(ls -1 /home/andrefs/Desktop/cenas | head -$NUMBER | tail -1)
+	
+	# cp 
+	echo $SITE
+else
+	# all selected
+fi
 
 
