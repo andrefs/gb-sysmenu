@@ -18,7 +18,6 @@ for site in  $(ls -1 /etc/apache2/sites-available); do
          else
                  site=" [UP]\t$site\n"
          fi
-		site="[CENAS] $site\n"
         sitelist=(${sitelist[@]-} "$site")
 done
 
