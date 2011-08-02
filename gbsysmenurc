@@ -1,2 +1,0 @@
-export GBSYSMENUPATH='/home/andrefs/Projects/groupbuddies/gb-sysmenu'
-PATH='$PATH:/home/andrefs/Projects/groupbuddies/gb-sysmenu/gbsysmenurc'
