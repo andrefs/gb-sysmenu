@@ -32,7 +32,7 @@ if [ -z "$GBSYSMENUPATH" ]; then
 		echo "source '$REPOPATH/gbsysmenurc'" >> "$HOME/.bashrc"
 	fi
 	echo "export GBSYSMENUPATH='$GBSYSMENUPATH'" > "$REPOPATH/gbsysmenurc"
-	echo "PATH='\$PATH:$REPOPATH/gbsysmenurc'" >> "$REPOPATH/gbsysmenurc"
+	echo "PATH=\"\$PATH:$REPOPATH/gbsysmenurc'" >> "$REPOPATH/gbsysmenurc"
 fi
 
 cd "$GBSYSMENUPATH"
