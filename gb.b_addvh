@@ -84,8 +84,8 @@ echo "
 
 " | sudo tee /etc/apache2/sites-available/$DOMAIN > /dev/null
 
-read -p "Do you want to configure this Virtual Host to use SSL? [Y/n] "
-if [[ "$REPLY" != "n" && "$REPLY" != "N" ]]; then
+read -p "Do you want to configure this Virtual Host to use SSL? [n/Y] "
+if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
 	echo "Generating new RSA keys."
 	mkdir -p "$HOME/ssl_keys/$DOMAIN"
 	cd "$HOME/ssl_keys/$DOMAIN"
