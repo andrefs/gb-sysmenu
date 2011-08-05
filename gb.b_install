@@ -6,7 +6,7 @@ if [ -e "$PWD"/.gb-sysmenu-repo-folder ]; then
 	if [ -z "$REPOPATH" ]; then
 		REPOPATH="$PWD"
 	fi
-elif [ -n "$GBSYSMENUPATH" ]; then
+elif [[ -n "$GBSYSMENUPATH" && -e "$GBSYSMENUPATH/.gb-sysmenu-repo-folder" ]]; then
 	echo "Current gb-sysmenu path is '$GBSYSMENUPATH'."
 	echo "Enter a new path, or leave empty to keep the current one: "
 	read -e REPOPATH
@@ -29,12 +29,26 @@ if [ -z "$GBSYSMENUPATH" ]; then
 	echo "Environmental variable '\$GBSYSMENUPATH' is not defined."
 	read -p "Do you want to add it to your .bashrc file? [Y/n] " 
 	if [[ "$REPLY" != "n" && "$REPLY" != "N" ]]; then
-		echo "source '$REPOPATH/gbsysmenurc'" >> "$HOME/.bashrc"
+		if [ -n "$(grep -P '\s*source.*gbsysmenurc\s*' "$HOME/.bashrc")" ]; then
+			grep -v -P '\s*source.*gbsysmenurc\s*' "$HOME/.bashrc" > "/tmp/$$.bashrc"
+			cp "/tmp/$$.bashrc" "$HOME/.bashrc"
+			rm "/tmp/$$.bashrc"
+		fi
+			echo "source '$REPOPATH/gbsysmenurc'" >> "$HOME/.bashrc"
 	fi
 	echo "export GBSYSMENUPATH='$GBSYSMENUPATH'" > "$REPOPATH/gbsysmenurc"
 	echo "PATH=\"\$PATH:\$GBSYSMENUPATH\"" >> "$REPOPATH/gbsysmenurc"
+else
+	echo "\$GBSYSMENUPATH is already defined [$GBSYSMENUPATH]"
 fi
 
 cd "$GBSYSMENUPATH"
+echo "Updating gb-sysmenu..."
 git pull
 cd -
+
+echo
+echo "Finished installing/updating gb-sysmenu."
+echo "To ensure that all environmental variables are ok, please run the following command: "
+echo "exec '$BASH'"
+exit 0

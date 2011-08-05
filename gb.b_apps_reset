@@ -1,0 +1,28 @@
+#!/bin/bash
+
+if [ -z "$HANDYANTCONFIGDIR" ]; then
+	HANDYANTCONFIGDIR='/home/naruto/HandyAnt-configs'
+fi
+
+cd "$HANDYANTCONFIGDIR"
+#git pull
+
+for gitf in $(ls *.yml); do
+	gitf=$(pwd)/"$gitf"
+	site=$(basename $gitf)
+	site=${site/.yml/}
+	localf="$HOME/public_html/$site/site_files/config/config.yml"
+	
+	if ! [ -e "$localf" ]; then
+		echo "Local file '$localf' does not exist; copying..."
+		chgdlist=(${chgdlist[@]-} $gitf)
+	elif [ "$gitf" -nt "$localf" ]; then
+		echo "Git version of '$site' is newer!"
+		chgdlist=(${chgdlist[@]-} $gitf)
+	else
+		echo "No new changes to '$site'!"
+	fi
+done
+echo "${chgdlist[@]-}"
+
+
