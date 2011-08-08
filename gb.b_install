@@ -1,0 +1,57 @@
+#!/bin/bash
+
+if [ -e "$PWD"/.gb-sysmenu-repo-folder ]; then
+	echo "Please enter the path to the local gb-sysmenu repository folder: [$PWD] "
+	read -e REPOPATH
+	if [ -z "$REPOPATH" ]; then
+		REPOPATH="$PWD"
+	fi
+elif [[ -n "$GBSYSMENUPATH" && -e "$GBSYSMENUPATH/.gb-sysmenu-repo-folder" ]]; then
+	echo "Current gb-sysmenu path is '$GBSYSMENUPATH'."
+	echo "Enter a new path, or leave empty to keep the current one: "
+	read -e REPOPATH
+	if [ -z "$REPOPATH" ]; then
+		REPOPATH="$GBSYSMENUPATH"
+	fi
+else
+	echo "Please enter the path to the local gb-sysmenu repository folder: "
+	read -e REPOPATH
+fi
+while [[ -z "$REPOPATH" || ! -d "$REPOPATH" || ! -e "$REPOPATH/.gb-sysmenu-repo-folder" ]]; do
+	echo "'$REPOPATH' does not appear to be the path to a gb-sysmenu local repository."
+	echo "Please enter a valid path: "
+	read -e REPOPATH
+done
+REPOPATH=${REPOPATH%/}
+
+if [ -z "$GBSYSMENUPATH" ]; then
+	export GBSYSMENUPATH="$REPOPATH"
+	echo "Environmental variable '\$GBSYSMENUPATH' is not defined."
+	read -p "Do you want to add it to your .bashrc file? [Y/n] " 
+	if [[ "$REPLY" != "n" && "$REPLY" != "N" ]]; then
+		if [ -n "$(grep -P '\s*source.*gbsysmenurc\s*' "$HOME/.bashrc")" ]; then
+			grep -v -P '\s*source.*gbsysmenurc\s*' "$HOME/.bashrc" > "/tmp/$$.bashrc"
+			cp "/tmp/$$.bashrc" "$HOME/.bashrc"
+			rm "/tmp/$$.bashrc"
+		fi
+			echo "source '$REPOPATH/gbsysmenurc'" >> "$HOME/.bashrc"
+	fi
+else
+	echo "\$GBSYSMENUPATH is already defined [$GBSYSMENUPATH]"
+fi
+
+if [ ! -e $REPOPATH/gbsysmenurc ]; then
+	echo "export GBSYSMENUPATH='$GBSYSMENUPATH'" > "$REPOPATH/gbsysmenurc"
+	echo "PATH=\"\$PATH:\$GBSYSMENUPATH\"" >> "$REPOPATH/gbsysmenurc"
+fi
+
+cd "$GBSYSMENUPATH"
+echo "Updating gb-sysmenu..."
+git pull
+cd -
+
+echo
+echo "Finished installing/updating gb-sysmenu."
+echo "To ensure that all environmental variables are ok, please run the following command: "
+echo "exec '$BASH'"
+exit 0
