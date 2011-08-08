@@ -88,6 +88,7 @@ while [ "$CHOICE" == "NO" ]; do
 	F|f) # Update all (even if config file does not appear to be changed)
 		for SITE in $(ls -1 "$HANDYANTCONFIGDIR"/*.yml); do
 			SITE=${SITE/.yml/}
+			SITE=$(basename $SITE)
 			echo "Updating config file from '$SITE'"
         done
         CHOICE='YES'
