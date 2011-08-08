@@ -53,7 +53,7 @@ while [ "$CHOICE" == "NO" ]; do
              nl |\
              perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g' |\
              cat <(echo -e "[Enter] $CURSITE\n") - |\
-             cat - <(echo ""; echo "[A] All"; echo "[X] Cancel") |\
+             cat - <(echo ""; echo "[A] All_with_updates"; echo "[F] Force_all"; echo "[X] Cancel") |\
              column -t
 	else
         # Calculate the list of sites with updates
@@ -79,12 +79,19 @@ while [ "$CHOICE" == "NO" ]; do
 		echo "Updating config file from '$SITE'"
         CHOICE='YES'
         ;; 
-    A|a) # Update all sites
+    A|a) # Update all sites with changed config files
         for SITE in "${chgdlist[@]}"; do
 			echo "Updating config file from '$SITE'"
         done
         CHOICE='YES'
         ;; 
+	F|f) # Update all (even if config file does not appear to be changed)
+		for SITE in $(ls -1 "$HANDYANTCONFIGDIR"/*.yml); do
+			SITE=${SITE/.yml/}
+			echo "Updating config file from '$SITE'"
+        done
+        CHOICE='YES'
+        ;;
     '') 
         if [ -z "$CURSITE" ]; then
             echo "Undefined option!"
