@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z "$HANDYANTCONFIGDIR" ]; then
-	HANDYANTCONFIGDIR='/home/naruto/gb-instancies'
+	HANDYANTCONFIGDIR='/home/hokage/gb-instancies'
 fi
 
 cd "$HANDYANTCONFIGDIR"
