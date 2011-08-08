@@ -49,7 +49,7 @@ while [ "$CHOICE" == "NO" ]; do
     # If $CURSITE is defined, present it at the top of the list
     if [[ -n "$CURSITE" && $(changed "$HANDYANTCONFIGDIR/$CURSITE.yml" "$HOME/public_html/$CURSITE/site_files/config/config.yml") ]]; then
         # Calculate the list of sites with updates
-        echo -e "${chgdlist[@]}" |\
+        for SITE in "${chgdlist[@]}"; do echo $SITE; done |\
              nl |\
              perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g' |\
              cat <(echo -e "[Enter] $CURSITE\n") - |\
@@ -57,7 +57,7 @@ while [ "$CHOICE" == "NO" ]; do
              column -t
 	else
         # Calculate the list of sites with updates
-        echo -e "${chgdlist[@]}" |\
+        for SITE in "${chgdlist[@]}"; do echo $SITE; done |\
              nl |\
              perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g' |\
              cat - <(echo ""; echo "[A] All";  echo "[X] Cancel") |\
