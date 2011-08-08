@@ -36,10 +36,13 @@ if [ -z "$GBSYSMENUPATH" ]; then
 		fi
 			echo "source '$REPOPATH/gbsysmenurc'" >> "$HOME/.bashrc"
 	fi
-	echo "export GBSYSMENUPATH='$GBSYSMENUPATH'" > "$REPOPATH/gbsysmenurc"
-	echo "PATH=\"\$PATH:\$GBSYSMENUPATH\"" >> "$REPOPATH/gbsysmenurc"
 else
 	echo "\$GBSYSMENUPATH is already defined [$GBSYSMENUPATH]"
+fi
+
+if [ ! -e $REPOPATH/gbsysmenurc ]; then
+	echo "export GBSYSMENUPATH='$GBSYSMENUPATH'" > "$REPOPATH/gbsysmenurc"
+	echo "PATH=\"\$PATH:\$GBSYSMENUPATH\"" >> "$REPOPATH/gbsysmenurc"
 fi
 
 cd "$GBSYSMENUPATH"
