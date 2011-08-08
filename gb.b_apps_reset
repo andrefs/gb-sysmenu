@@ -31,7 +31,7 @@ cd -
 echo "There are updated config files for the following sites. Which one do you want to update? [Cancel] "
 
 # Check which ones are new
-for gitf in $(ls -1 "$HANDYANTCONFIGDIR/*.yml"); do
+for gitf in $(ls -1 "$HANDYANTCONFIGDIR"/*.yml); do
 	[ "$site" == "$CURSITE" ] && continue
 	gitf=$(pwd)/"$gitf"
 	site=$(basename $gitf)
