@@ -32,8 +32,8 @@ if [ -n "$CURSITE" ]; then
 		 nl -v0 |\
 		 perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g' |\
 		 cat <(echo -e "[Enter] $CURSITE\n") - |\
-		 cat - <(echo ""; echo "[A] All"; echo "[X] Cancel") #|\
-		 #column -t
+		 cat - <(echo ""; echo "[A] All"; echo "[X] Cancel") |\
+		 column -t
 else
 	echo -e "${sitelist[@]}" | cat <(echo -e "All\n") - | nl -v0 | perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g' | column -t
 fi
