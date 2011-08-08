@@ -1,21 +1,6 @@
 #!/bin/bash
 
-changed () {
-	gitf="$1"
-	localf="$2"
-	if ! [ -e "$localf" ]; then
-		return 1;
-		# echo "Local file '$localf' does not exist; copying..."
-		# chgdlist=(${chgdlist[@]-} $gitf)
-	elif [ "$gitf" -nt "$localf" ]; then
-		return 1;
-		# echo "Git version of '$site' is newer!"
-		# chgdlist=(${chgdlist[@]-} $gitf)
-	else
-		return 0;
-		# echo "No new changes to '$site'!"
-	fi
-}
+
 
 if [ -z "$HANDYANTCONFIGDIR" ]; then
 	HANDYANTCONFIGDIR='/home/hokage/gb-instancies'
@@ -52,4 +37,19 @@ printf "%s\n" "${chgdlist[@]-}" | cat <(echo "All") - | perl -plne 's/^.*\///' |
 #     exit 0
 # fi
 
-
+changed () {
+	gitf="$1"
+	localf="$2"
+	if ! [ -e "$localf" ]; then
+		return 1;
+		# echo "Local file '$localf' does not exist; copying..."
+		# chgdlist=(${chgdlist[@]-} $gitf)
+	elif [ "$gitf" -nt "$localf" ]; then
+		return 1;
+		# echo "Git version of '$site' is newer!"
+		# chgdlist=(${chgdlist[@]-} $gitf)
+	else
+		return 0;
+		# echo "No new changes to '$site'!"
+	fi
+}
