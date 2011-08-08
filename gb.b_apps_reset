@@ -80,7 +80,7 @@ while [ "$CHOICE" == "NO" ]; do
         CHOICE='YES'
         ;; 
     A|a) # Update all sites
-        for SITE in $(ls -1 "$HOME/public_html"); do
+        for SITE in "${chgdlist[@]}"; do
 			echo "Updating config file from '$SITE'"
         done
         CHOICE='YES'
