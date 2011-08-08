@@ -13,7 +13,7 @@ CURSITE=$("$GBSYSMENUPATH/gb.a_location")
 
 echo "Here's the list of sites in your sites-available directory."
 echo "Please pick an option:"
-for site in  $(ls -1 /etc/apache2/sites-available); do
+for site in  $(ls -1 "$HOME/public_html"); do
          if [ -e "$HOME/public_html/$site/site_files/public/index.html" ]; then
                  site=" [MAINT]\t$site\n"
          else
