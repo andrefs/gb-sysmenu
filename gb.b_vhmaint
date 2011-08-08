@@ -1,6 +1,8 @@
 #!/bin/bash
 # Toggles "site under maintenance" page on a vhost
 
+
+# $GBSYSMENUPATH must be defined
 if [ -z "$GBSYSMENUPATH" ]; then
 	echo "It appears that you don't have the \$GBSYSMENUPATH environmental variable set."
 	echo 'This script requires that $GBSYSMENUPATH is defined in order to execute.'
@@ -9,48 +11,60 @@ if [ -z "$GBSYSMENUPATH" ]; then
 	exit 1
 fi
 
+# Find out site corresponding to current directory (if any)
 CURSITE=$("$GBSYSMENUPATH/gb.a_location")
 
-echo "Here's the list of sites in your public_html directory."
-echo "Please pick an option:"
+echo "Here's the list of sites in your public_html directory:"
+
+# Calculate the list of sites in public_html and their state 
 for site in  $(ls -1 "$HOME/public_html"); do
-         if [ -e "$HOME/public_html/$site/site_files/public/index.html" ]; then
-                 site=" [MAINT]\t$site\n"
-         else
-                 site=" [UP]\t$site\n"
-         fi
-        sitelist=(${sitelist[@]-} "$site")
+	[ "$site" == "$CURSITE" ] && continue
+    if [ -e "$HOME/public_html/$site/site_files/public/index.html" ]; then
+            site=" [MAINT]\t$site\n"
+    else
+            site=" [UP]\t$site\n"
+    fi
+    sitelist=(${sitelist[@]-} "$site")
 done
 
+# Repeat until valid choice
 CHOICE="NO"
 while [ "$CHOICE" == "NO" ]; do
+	# If $CURSITE is defined, present it at the top of the list
 	if [ -n "$CURSITE" ]; then
 		if [ -e "$HOME/public_html/$CURSITE/site_files/public/index.html" ]; then
 		        CURSITE=" [MAINT]\t$CURSITE [Current site]\n\n"
 		else    
 		        CURSITE=" [UP]\t$CURSITE [Current site]\n\n"
 		fi 
+		# Calculate the list of sites and their states
 		echo -e "${sitelist[@]}" |\
-			 nl -v0 |\
+			 nl |\
 			 perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g' |\
 			 cat <(echo -e "[Enter] $CURSITE\n") - |\
-			 cat - <(echo ""; echo "[A] All"; echo "[X] Cancel") |\
+			 cat - <(echo ""; echo "[M] All_maintenance"; echo "[U] All_up"; echo "[X] Cancel") |\
 			 column -t
 	else
+		# Calculate the list of sites and their states
 		echo -e "${sitelist[@]}" |\
-			 nl -v0 |\
+			 nl |\
 			 perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g' |\
-			 cat - <(echo ""; echo "[A] All"; echo "[X] Cancel") |\
+			 cat - <(echo ""; echo "[M] Maintenance all"; echo "[U] Up all"; echo "[X] Cancel") |\
 			 column -t
 	fi
 	read -p "Choose a site to toggle its maintenance status: " -e NUMBER
 
 	case $NUMBER in
-	X|x) 
+	X|x) # Cancel and exit
 		exit 1
 		;;
-	[0-9]|[0-9][0-9])
-		SITE=$(ls -1 "$HOME/public_html" | head -$NUMBER | tail -1)
+	[0-9]|[0-9][0-9]) # Number with one or two digits. 
+		if [ -z "$CURSITE" ]; then
+			SITE=$(ls -1 "$HOME/public_html" | head -$NUMBER | tail -1)
+		else
+			CURSITE=$("$GBSYSMENUPATH/gb.a_location")
+			SITE=$(ls -1 "$HOME/public_html" | grep -v "$CURSITE" | head -$NUMBER | tail -1)
+		fi
 		if [ -e "$HOME/public_html/$SITE/site_files/public/index.html" ]; then
 			#rm "$HOME/public_html/$SITE/site_files/public/index.html"
 			echo "Removed index.html from $SITE. Rails app should be working now."
@@ -60,22 +74,26 @@ while [ "$CHOICE" == "NO" ]; do
 		fi
 		CHOICE='YES'
 		;;
-	A|a)
+	M|m) # Put all sites under maintenance
 		for SITE in $(ls -1 "$HOME/public_html"); do
-			if [ -e "$HOME/public_html/$SITE/site_files/public/index.html" ]; then
-				#rm "$HOME/public_html/$SITE/site_files/public/index.html"
-				echo "Removed index.html from $SITE. Rails app should be working now."
-			else
-				#cp "$GBSYSMENUPATH/vhmaint.html" "$HOME/public_html/$SITE/site_files/public/index.html"
-				echo "Created index.html. 'Site under maintenace' page should be visible at $SITE."
-			fi
+			#cp "$GBSYSMENUPATH/vhmaint.html" "$HOME/public_html/$SITE/site_files/public/index.html"
+			echo "Created index.html. 'Site under maintenace' page should be visible at $SITE."
 		done
 		CHOICE='YES'
 		;;		
+	U|u) # Put all sites up (remove maintenance warning)
+		for SITE in $(ls -1 "$HOME/public_html"); do
+			#rm -f "$HOME/public_html/$SITE/site_files/public/index.html"
+			echo "Removed index.html from $SITE. Rails app should be working now."
+		done
+		CHOICE='YES'
+		;;
 	'')
 		if [ -z "$CURSITE" ]; then
-			echo "Undefined option! Choose a site to toggle its maintenance status: "
+			echo "Undefined option!"
+			CHOICE='NO'
 		else
+			CURSITE=$("$GBSYSMENUPATH/gb.a_location")
 			if [ -e "$HOME/public_html/$CURSITE/site_files/public/index.html" ]; then
 				#rm "$HOME/public_html/$CURSITE/site_files/public/index.html"
 				echo "Removed index.html from $CURSITE. Rails app should be working now."
@@ -83,11 +101,11 @@ while [ "$CHOICE" == "NO" ]; do
 				#cp "$GBSYSMENUPATH/vhmaint.html" "$HOME/public_html/$CURSITE/site_files/public/index.html"
 				echo "Created index.html. 'Site under maintenace' page should be visible at $CURSITE."
 			fi			
+			CHOICE='YES'
 		fi
-		CHOICE='YES'
 		;;
 	*)
-		echo "Undefined option '$NUMBER'! Choose a site to toggle its maintenance status: "
+		echo "Undefined option '$NUMBER'!"
 		CHOICE='NO'
 		;;
 	esac
