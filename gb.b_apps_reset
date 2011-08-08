@@ -81,7 +81,7 @@ while [ "$CHOICE" == "NO" ]; do
         ;; 
     A|a) # Update all sites
         for SITE in "${chgdlist[@]}"; do
-			echo "Updating config file from '$SITE'"
+			echo -e "Updating config file from '$SITE'"
         done
         CHOICE='YES'
         ;; 
