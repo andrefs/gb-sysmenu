@@ -26,6 +26,7 @@ fi
 # Pull new commits
 cd "$HANDYANTCONFIGDIR"
 #git pull
+cd -
 
 echo "There are updated config files for the following sites. Which one do you want to update? [Cancel] "
 
