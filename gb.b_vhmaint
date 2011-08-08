@@ -35,7 +35,11 @@ if [ -n "$CURSITE" ]; then
 		 cat - <(echo ""; echo "[A] All"; echo "[X] Cancel") |\
 		 column -t
 else
-	echo -e "${sitelist[@]}" | cat <(echo -e "All\n") - | nl -v0 | perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g' | column -t
+	echo -e "${sitelist[@]}" |\
+		 nl -v0 |\
+		 perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g' |\
+		 cat - <(echo ""; echo "[A] All"; echo "[X] Cancel") |\
+		 column -t
 fi
 
 read -p "Choose a site to toggle its maintenance status: " -e NUMBER
