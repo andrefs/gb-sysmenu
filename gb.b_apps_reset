@@ -30,14 +30,15 @@ cd "$HANDYANTCONFIGDIR"
 echo "There are updated config files for the following sites. Which one do you want to update? [Cancel] "
 
 # Check which ones are new
-for gitf in $(ls *.yml); do
+for gitf in $(ls -1 "$HANDYANTCONFIGDIR/*.yml"); do
+	[ "$site" == "$CURSITE" ] && continue
 	gitf=$(pwd)/"$gitf"
 	site=$(basename $gitf)
 	site=${site/.yml/}
 	localf="$HOME/public_html/$site/site_files/config/config.yml"
 
 	if [ $(changed "$gitf" "$localf") ]; then
-		chgdlist=(${chgdlist[@]-} $gitf)
+		chgdlist=(${chgdlist[@]-} $site)
 	fi
 done
 # echo "${chgdlist[@]-}"
