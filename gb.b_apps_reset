@@ -38,7 +38,7 @@ for gitf in $(ls -1 "$HANDYANTCONFIGDIR"/*.yml); do
 	localf="$HOME/public_html/$site/site_files/config/config.yml"
 
 	if [ $(changed "$gitf" "$localf") ]; then
-		chgdlist=(${chgdlist[@]-} "$site\n")
+		chgdlist=(${chgdlist[@]-} "$site")
 	fi
 done
 # echo "${chgdlist[@]-}"
@@ -81,7 +81,7 @@ while [ "$CHOICE" == "NO" ]; do
         ;; 
     A|a) # Update all sites
         for SITE in "${chgdlist[@]}"; do
-			echo -e "Updating config file from '$SITE'"
+			echo "Updating config file from '$SITE'"
         done
         CHOICE='YES'
         ;; 
