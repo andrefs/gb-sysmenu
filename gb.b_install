@@ -40,8 +40,14 @@ else
 	echo "\$GBSYSMENUPATH is already defined [$GBSYSMENUPATH]"
 fi
 
+if [ -z "$GBSITESDIR" ]; then
+	GBSITESDIR="$HOME/public_html"
+	mkdir -p "$GBSITESDIR"
+fi
+
 if [ ! -e $REPOPATH/gbsysmenurc ]; then
 	echo "export GBSYSMENUPATH='$GBSYSMENUPATH'" > "$REPOPATH/gbsysmenurc"
+	echo "export GBSITESDIR='$GBSITESDIR'" > "$REPOPATH/gbsysmenurc"
 	echo "PATH=\"\$PATH:\$GBSYSMENUPATH\"" >> "$REPOPATH/gbsysmenurc"
 fi
 
