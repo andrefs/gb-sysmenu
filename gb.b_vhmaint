@@ -11,7 +11,7 @@ fi
 
 CURSITE=$("$GBSYSMENUPATH/gb.a_location")
 
-echo "Here's the list of sites in your sites-available directory."
+echo "Here's the list of sites in your public_html directory."
 echo "Please pick an option:"
 for site in  $(ls -1 "$HOME/public_html"); do
          if [ -e "$HOME/public_html/$site/site_files/public/index.html" ]; then
