@@ -1,57 +1,108 @@
 #!/bin/bash
 
+# Function which finds if there is an updated config.yml for a given site
 changed () {
 	gitf="$1"
 	localf="$2"
 	if ! [ -e "$localf" ]; then
+		echo 1;
 		return 1;
-		# echo "Local file '$localf' does not exist; copying..."
-		# chgdlist=(${chgdlist[@]-} $gitf)
 	elif [ "$gitf" -nt "$localf" ]; then
+		echo 1;
 		return 1;
-		# echo "Git version of '$site' is newer!"
-		# chgdlist=(${chgdlist[@]-} $gitf)
 	else
 		return 0;
-		# echo "No new changes to '$site'!"
 	fi
 }
 
+# Find out site corresponding to current directory (if any)
 CURSITE=$("$GBSYSMENUPATH/gb.a_location")
 
+# Config files repository directory
 if [ -z "$HANDYANTCONFIGDIR" ]; then
 	HANDYANTCONFIGDIR='/home/hokage/gb-instancies'
 fi
 
+# Pull new commits
 cd "$HANDYANTCONFIGDIR"
 #git pull
 
+echo "There are updated config files for the following sites. Which one do you want to update? [Cancel] "
+
+# Check which ones are new
 for gitf in $(ls *.yml); do
 	gitf=$(pwd)/"$gitf"
 	site=$(basename $gitf)
 	site=${site/.yml/}
 	localf="$HOME/public_html/$site/site_files/config/config.yml"
 
-	changed "$gitf" "$localf"
-	if [ $? -eq 1 ]; then
+	if [ $(changed "$gitf" "$localf") ]; then
 		chgdlist=(${chgdlist[@]-} $gitf)
 	fi
 done
 # echo "${chgdlist[@]-}"
 
-echo "The config files for these sites have changed. Which one do you want to update? [Cancel] "
-printf "%s\n" "${chgdlist[@]-}" | cat <(echo "All") - | perl -plne 's/^.*\///' | nl -v0 | perl -plne 's/\s+(\d+)\s+/ [$1] /g'
+# Repeat until valid choice
+CHOICE="NO"
+while [ "$CHOICE" == "NO" ]; do
+    # If $CURSITE is defined, present it at the top of the list
+    if [[ -n "$CURSITE" && $(changed "$HANDYANTCONFIGDIR/$CURSITE.yml" "$HOME/public_html/$CURSITE/site_files/config/config.yml") ]]; then
+        # Calculate the list of sites with updates
+        echo -e "${chgdlist[@]}" |\
+             nl |\
+             perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g' |\
+             cat <(echo -e "[Enter] $CURSITE\n") - |\
+             cat - <(echo ""; echo "[A] All"; echo "[X] Cancel") |\
+             column -t
+	else
+        # Calculate the list of sites with updates
+        echo -e "${chgdlist[@]}" |\
+             nl |\
+             perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g' |\
+             cat - <(echo ""; echo "[A] All";  echo "[X] Cancel") |\
+             column -t
+    fi
+    read -p "Choose a site to update: " -e NUMBER
 
-# ls -1 /etc/apache2/sites-available | nl | perl -plne 's/\s+(\d+)\s+/ [$1] /g'
-# read -p "Which one do you want to change? [0 to quit] " -e NUMBER
-# while ! [[ "$NUMBER" =~ ^[0-9]+$ ]]; do
-#     echo "$NUMBER is not a valid number."
-#     ls -1 /etc/apache2/sites-available | nl | perl -plne 's/\s+(\d+)\s+/ [$1] /g'
-#     read -p "Please enter the number of the site you want to change: [0 to quit] " -e NUMBER
-# done
-# if [ "$NUMBER" == "0" ]; then
-#     echo "Operation canceled."
-#     exit 0
-# fi
+    case $NUMBER in
+    X|x) # Cancel and exit
+        exit 1
+        ;;  
+    [0-9]|[0-9][0-9]) # Number with one or two digits. 
+        if [ -z "$CURSITE" ]; then
+            SITE=$(ls -1 "$HOME/public_html" | head -$NUMBER | tail -1)
+        else
+            CURSITE=$("$GBSYSMENUPATH/gb.a_location")
+            SITE=$(ls -1 "$HOME/public_html" | grep -v "$CURSITE" | head -$NUMBER | tail -1)
+        fi  
+		echo "Updating config file from '$SITE'"
+        CHOICE='YES'
+        ;; 
+    A|a) # Update all sites
+        for SITE in $(ls -1 "$HOME/public_html"); do
+			echo "Updating config file from '$SITE'"
+        done
+        CHOICE='YES'
+        ;; 
+    '') 
+        if [ -z "$CURSITE" ]; then
+            echo "Undefined option!"
+            CHOICE='NO'
+        else
+            CURSITE=$("$GBSYSMENUPATH/gb.a_location")
+			echo "Updating config file from '$CURSITE'"
+            CHOICE='YES'
+        fi
+        ;;
+    *)
+        echo "Undefined option '$NUMBER'!"
+        CHOICE='NO'
+        ;;
+    esac
+done
+
+
+
+#printf "%s\n" "${chgdlist[@]-}" | cat <(echo "All") - | perl -plne 's/^.*\///' | nl -v0 | perl -plne 's/\s+(\d+)\s+/ [$1] /g'
 
 
