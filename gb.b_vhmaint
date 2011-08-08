@@ -49,7 +49,7 @@ while [ "$CHOICE" == "NO" ]; do
 		echo -e "${sitelist[@]}" |\
 			 nl |\
 			 perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g' |\
-			 cat - <(echo ""; echo "[M] Maintenance all"; echo "[U] Up all"; echo "[X] Cancel") |\
+			 cat - <(echo ""; echo "[M] All_maintenance"; echo "[U] All_up"; echo "[X] Cancel") |\
 			 column -t
 	fi
 	read -p "Choose a site to toggle its maintenance status: " -e NUMBER
