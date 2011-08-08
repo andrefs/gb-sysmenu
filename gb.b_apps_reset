@@ -1,6 +1,6 @@
 #!/bin/bash
 
-function changed {
+changed () {
 	gitf="$1"
 	localf="$2"
 	if ! [ -e "$localf" ]; then
@@ -31,7 +31,7 @@ for gitf in $(ls *.yml); do
 	localf="$HOME/public_html/$site/site_files/config/config.yml"
 
 	changed "$gitf" "$localf"
-	if [ $? eq 1 ]; then
+	if [ $? -eq 1 ]; then
 		chgdlist=(${chgdlist[@]-} $gitf)
 	fi
 done
@@ -53,19 +53,3 @@ printf "%s\n" "${chgdlist[@]-}" | cat <(echo "All") - | perl -plne 's/^.*\///' |
 # fi
 
 
-function changed {
-	gitf="$1"
-	localf="$2"
-	if ! [ -e "$localf" ]; then
-		return 1;
-		# echo "Local file '$localf' does not exist; copying..."
-		# chgdlist=(${chgdlist[@]-} $gitf)
-	elif [ "$gitf" -nt "$localf" ]; then
-		return 1;
-		# echo "Git version of '$site' is newer!"
-		# chgdlist=(${chgdlist[@]-} $gitf)
-	else
-		return 0;
-		# echo "No new changes to '$site'!"
-	fi
-}
