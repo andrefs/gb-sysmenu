@@ -88,7 +88,7 @@ echo
 	CHOICE="NO"
 	while [ "$CHOICE" == "NO" ]; do
 	    # If $CURSITE is defined, present it at the top of the list
-	    if [[ -n "$CURSITE" && $(changed "$HANDYANTCONFIGDIR/$CURSITE.yml" "$HOME/public_html/$CURSITE/site_files/config/config.yml") ]]; then
+	    if [ -n "$CURSITE" ]; then
 	        # Print the list of sites with updates
 	        for SITE in "${alllist[@]}"; do echo $SITE; done |\
 	             nl |\
