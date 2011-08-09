@@ -38,12 +38,14 @@ echo
 	            CURSITE=$("$GBSYSMENUPATH/gb.a_location")
 	            SITE=$(ls -1 "$HANDYANTCONFIGDIR"/*.yml | grep -v "$CURSITE" | head -$NUMBER | tail -1)
 	        fi  
-			echo "Updating config file from '$SITE'"
+			update_config "$SITE"
+			#echo "Updating config file from '$SITE'"
 	        CHOICE='YES'
 	        ;; 
 	    A|a) # Update all sites in this list
 	        for SITE in "${chgdlist[@]}"; do
-				echo "Updating config file from '$SITE'"
+				update_config "$SITE"
+				# echo "Updating config file from '$SITE'"
 	        done
 	        CHOICE='YES'
 	        ;; 
@@ -62,7 +64,8 @@ echo
 	            CHOICE='NO'
 	        else
 	            CURSITE=$("$GBSYSMENUPATH/gb.a_location")
-				echo "Updating config file from '$CURSITE'"
+				update_config "$CURSITE"
+				# echo "Updating config file from '$CURSITE'"
 	            CHOICE='YES'
 	        fi
 	        ;;
@@ -111,12 +114,14 @@ echo
 	            CURSITE=$("$GBSYSMENUPATH/gb.a_location")
 	            SITE=$(ls -1 "$HANDYANTCONFIGDIR"/*.yml | grep -v "$CURSITE" | head -$NUMBER | tail -1)
 	        fi  
-			echo "Updating config file from '$SITE'"
+			update_config "$SITE"
+			# echo "Updating config file from '$SITE'"
 	        CHOICE='YES'
 	        ;; 
 	    A|a) # Update all sites in this list
 	        for SITE in "${alllist[@]}"; do
-				echo "Updating config file from '$SITE'"
+				update_config "$SITE"
+				# echo "Updating config file from '$SITE'"
 	        done
 	        CHOICE='YES'
 	        ;; 
@@ -135,7 +140,8 @@ echo
 	            CHOICE='NO'
 	        else
 	            CURSITE=$("$GBSYSMENUPATH/gb.a_location")
-				echo "Updating config file from '$CURSITE'"
+				update_config "$CURSITE"
+				# echo "Updating config file from '$CURSITE'"
 	            CHOICE='YES'
 	        fi
 	        ;;
@@ -147,3 +153,12 @@ echo
 	done
 }
 
+update_config () {
+	SITE="$1"
+	cp "$HANDYANTCONFIGDIR/$SITE.yml" "$GBSITESDIR/$SITE/config/config.yml"
+	if [ $? ]; then
+		echo "Could not copy '$HANDYANTCONFIGDIR/$SITE.yml' to '$GBSITESDIR/$SITE/config/config.yml'"
+	else
+		echo "Copied '$HANDYANTCONFIGDIR/$SITE.yml' to '$GBSITESDIR/$SITE/config/config.yml'"
+	fi
+}
