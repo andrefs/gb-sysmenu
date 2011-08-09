@@ -18,7 +18,7 @@ source "$GBSYSMENUPATH/gb.a_check_envvars" || \
 	echo -e "You either don't have the \$GBSYSMENUPATH env var defined, or something\nis wrong with your gb-sysmenu installation (missing gb.a_check_envvars).\n\nPlease run the gb.b_install script or manually set \$GBSYSMENUPATH."
 
 # Find out site corresponding to current directory (if any)
-CURSITE=$("$GBSYSMENUPATH/gb.a_location")
+export CURSITE=$("$GBSYSMENUPATH/gb.a_location")
 
 # Config files repository directory
 if [ -z "$HANDYANTCONFIGDIR" ]; then
