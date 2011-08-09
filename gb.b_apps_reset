@@ -1,5 +1,19 @@
 #!/bin/bash
 
+changed () {
+    gitf="$1"
+    localf="$2"
+    if ! [ -e "$localf" ]; then
+        echo 1;
+        return 1;
+    elif [ "$gitf" -nt "$localf" ]; then
+        echo 1;
+        return 1;
+    else
+        return 0;
+    fi  
+}
+
 source "$GBSYSMENUPATH/gb.a_check_envvars" || \
 	echo -e "You either don't have the \$GBSYSMENUPATH env var defined, or something\nis wrong with your gb-sysmenu installation (missing gb.a_check_envvars).\n\nPlease run the gb.b_install script or manually set \$GBSYSMENUPATH."
 
