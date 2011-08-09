@@ -44,11 +44,11 @@ done
 
 # Get list with all (except current)
 for gitf in $(ls -1 "$HANDYANTCONFIGDIR"/*.yml); do
+echo alllist
 	[ "$site" == "$CURSITE" ] && continue
 	site=$(basename $gitf)
 	site=${site/.yml/}
 	localf="$HOME/public_html/$site/site_files/config/config.yml"
-echo alllist
 	alllist=(${alllist[@]-} "$site")
 done
 
