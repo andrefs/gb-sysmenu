@@ -191,4 +191,4 @@ update_all() {
 	done
 }
 
-
+update_changed
