@@ -161,8 +161,8 @@ echo
 update_config () {
 	SITE="$1"
 	cp "$HANDYANTCONFIGDIR/$SITE.yml" "$GBSITESDIR/$SITE/site_files/config/config.yml"
-	if [ $? ]; then
-		echo "Could not copy '$HANDYANTCONFIGDIR/$SITE.yml' to '$GBSITESDIR/$SITE/config/config.yml'"
+	if [ $? -ne 0 ]; then
+		echo "Could not copy '$HANDYANTCONFIGDIR/$SITE.yml' to '$GBSITESDIR/$SITE/site_files/config/config.yml'"
 	else
 		echo "Copied '$HANDYANTCONFIGDIR/$SITE.yml' to '$GBSITESDIR/$SITE/config/config.yml'"
 	fi
