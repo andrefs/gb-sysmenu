@@ -6,6 +6,9 @@ changed () {
     if ! [ -e "$localf" ]; then
         echo 1;
         return 1;
+	elif [ $(diff "$gitf"  "$localf") ]; then
+		echo 1;
+		return 1;
     elif [ "$gitf" -nt "$localf" ]; then
         echo 1;
         return 1;
