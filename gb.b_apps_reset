@@ -52,6 +52,7 @@ done
 
 
 update_changed() {
+echo "update_changed"
 	# Repeat until valid choice
 	CHOICE="NO"
 	while [ "$CHOICE" == "NO" ]; do
@@ -122,6 +123,7 @@ update_changed() {
 }
 
 update_all() {
+echo "update_all"
 	# Repeat until valid choice
 	CHOICE="NO"
 	while [ "$CHOICE" == "NO" ]; do
