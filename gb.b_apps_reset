@@ -168,7 +168,7 @@ echo "These are all the sites in your public_html dir. Which one do you want to 
 	        done
 	        CHOICE='YES'
 	        ;; 
-		U|u) # Update sites with changed config files
+		F|f) # Update sites with changed config files
 			update_new
 			# for SITE in $(ls -1 "$HANDYANTCONFIGDIR"/*.yml); do
 			# 	SITE=${SITE/.yml/}
