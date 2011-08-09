@@ -69,7 +69,7 @@ update_changed() {
 	        for SITE in "${chgdlist[@]}"; do echo $SITE; done |\
 	             nl |\
 	             perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g' |\
-	             cat - <(echo ""; echo "[A] All";  echo "[X] Cancel") |\
+	             cat - <(echo ""; echo "[A] All_with_updates"; echo "[F] See_all_sites"; echo "[X] Cancel") |\
 	             column -t
 	    fi
 	    read -p "Choose a site to update: " -e NUMBER
@@ -139,7 +139,7 @@ update_all() {
 	        for SITE in "${alllist[@]}"; do echo $SITE; done |\
 	             nl |\
 	             perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g' |\
-	             cat - <(echo ""; echo "[A] All";  echo "[X] Cancel") |\
+	             cat - <(echo ""; echo "[A] All_with_updates"; echo "[F] See_only_the_new_ones"; echo "[X] Cancel") |\
 	             column -t
 	    fi
 	    read -p "Choose a site to update: " -e NUMBER
