@@ -47,7 +47,7 @@ fi
 
 if [ ! -e $REPOPATH/gbsysmenurc ]; then
 	echo "export GBSYSMENUPATH='$GBSYSMENUPATH'" > "$REPOPATH/gbsysmenurc"
-	echo "export GBSITESDIR='$GBSITESDIR'" > "$REPOPATH/gbsysmenurc"
+	echo "export GBSITESDIR='$GBSITESDIR'" >> "$REPOPATH/gbsysmenurc"
 	echo "PATH=\"\$PATH:\$GBSYSMENUPATH\"" >> "$REPOPATH/gbsysmenurc"
 fi
 
