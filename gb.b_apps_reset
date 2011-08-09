@@ -37,17 +37,19 @@ for gitf in $(ls -1 "$HANDYANTCONFIGDIR"/*.yml); do
 	localf="$HOME/public_html/$site/site_files/config/config.yml"
 
 	if [ $(changed "$gitf" "$localf") ]; then
-echo chgdlist
+echo $site
 		chgdlist=(${chgdlist[@]-} "$site")
 	fi
 done
+
+echo
 
 # Get list with all (except current)
 for gitf in $(ls -1 "$HANDYANTCONFIGDIR"/*.yml); do
 	site=$(basename $gitf)
 	site=${site/.yml/}
 	[ "$site" == "$CURSITE" ] && continue
-echo alllist
+echo $site
 	localf="$HOME/public_html/$site/site_files/config/config.yml"
 	alllist=(${alllist[@]-} "$site")
 done
