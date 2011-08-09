@@ -1,17 +1,5 @@
 # Function which finds if there is an updated config.yml for a given site
-changed () {
-    gitf="$1"
-    localf="$2"
-    if ! [ -e "$localf" ]; then
-        echo 1;
-        return 1;
-    elif [ "$gitf" -nt "$localf" ]; then
-        echo 1;
-        return 1;
-    else
-        return 0;
-    fi  
-}
+
 
 update_changed() {
 echo
@@ -27,14 +15,14 @@ echo
 	             nl |\
 	             perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g' |\
 	             cat <(echo -e "[Enter] $CURSITE\n") - |\
-	             cat - <(echo ""; echo "[A] All_with_updates"; echo "[F] See_all_sites"; echo "[X] Cancel") |\
+	             cat - <(echo ""; echo "[A] All_in_this_list"; echo "[F] See_all_sites"; echo "[X] Cancel") |\
 	             column -t
 		else
 	        # Print the list of sites with updates
 	        for SITE in "${chgdlist[@]}"; do echo $SITE; done |\
 	             nl |\
 	             perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g' |\
-	             cat - <(echo ""; echo "[A] All_with_updates"; echo "[F] See_all_sites"; echo "[X] Cancel") |\
+	             cat - <(echo ""; echo "[A] All_in_this_list"; echo "[F] See_all_sites"; echo "[X] Cancel") |\
 	             column -t
 	    fi
 	    read -p "Choose a site to update: " -e NUMBER
@@ -53,7 +41,7 @@ echo
 			echo "Updating config file from '$SITE'"
 	        CHOICE='YES'
 	        ;; 
-	    A|a) # Update all sites with changed config files
+	    A|a) # Update all sites in this list
 	        for SITE in "${chgdlist[@]}"; do
 				echo "Updating config file from '$SITE'"
 	        done
@@ -100,14 +88,14 @@ echo
 	             nl |\
 	             perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g' |\
 	             cat <(echo -e "[Enter] $CURSITE\n") - |\
-	             cat - <(echo ""; echo "[A] All_with_updates"; echo "[F] See_only_the_new_ones"; echo "[X] Cancel") |\
+	             cat - <(echo ""; echo "[A] All_in_this_list"; echo "[F] See_only_the_new_ones"; echo "[X] Cancel") |\
 	             column -t
 		else
 	        # Print the list of sites with updates
 	        for SITE in "${alllist[@]}"; do echo $SITE; done |\
 	             nl |\
 	             perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g' |\
-	             cat - <(echo ""; echo "[A] All_with_updates"; echo "[F] See_only_the_new_ones"; echo "[X] Cancel") |\
+	             cat - <(echo ""; echo "[A] All_in_this_list"; echo "[F] See_only_the_new_ones"; echo "[X] Cancel") |\
 	             column -t
 	    fi
 	    read -p "Choose a site to update: " -e NUMBER
