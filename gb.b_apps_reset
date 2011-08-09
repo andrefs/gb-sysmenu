@@ -54,7 +54,9 @@ done
 
 
 update_changed() {
+echo
 echo "The config files for these sites have changed. Which one do you want to update? [Cancel] "
+echo
 	# Repeat until valid choice
 	CHOICE="NO"
 	while [ "$CHOICE" == "NO" ]; do
@@ -125,7 +127,9 @@ echo "The config files for these sites have changed. Which one do you want to up
 }
 
 update_all() {
+echo
 echo "These are all the sites in your public_html dir. Which one do you want to update? [Cancel] "
+echo
 	# Repeat until valid choice
 	CHOICE="NO"
 	while [ "$CHOICE" == "NO" ]; do
