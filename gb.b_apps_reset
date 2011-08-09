@@ -37,7 +37,6 @@ for gitf in $(ls -1 "$HANDYANTCONFIGDIR"/*.yml); do
 	localf="$HOME/public_html/$site/site_files/config/config.yml"
 
 	if [ $(changed "$gitf" "$localf") ]; then
-echo $site
 		chgdlist=(${chgdlist[@]-} "$site")
 	fi
 done
@@ -49,14 +48,13 @@ for gitf in $(ls -1 "$HANDYANTCONFIGDIR"/*.yml); do
 	site=$(basename $gitf)
 	site=${site/.yml/}
 	[ "$site" == "$CURSITE" ] && continue
-echo $site
 	localf="$HOME/public_html/$site/site_files/config/config.yml"
 	alllist=(${alllist[@]-} "$site")
 done
 
 
 update_changed() {
-echo "update_changed"
+echo "The config files for these sites have changed. Which one do you want to update? [Cancel] "
 	# Repeat until valid choice
 	CHOICE="NO"
 	while [ "$CHOICE" == "NO" ]; do
@@ -127,7 +125,7 @@ echo "update_changed"
 }
 
 update_all() {
-echo "update_all"
+echo "These are all the sites in your public_html dir. Which one do you want to update? [Cancel] "
 	# Repeat until valid choice
 	CHOICE="NO"
 	while [ "$CHOICE" == "NO" ]; do
