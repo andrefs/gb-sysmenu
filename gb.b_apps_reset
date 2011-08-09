@@ -31,9 +31,9 @@ cd -
 
 # Check which ones are new (except current)
 for gitf in $(ls -1 "$HANDYANTCONFIGDIR"/*.yml); do
-	[ "$site" == "$CURSITE" ] && continue
 	site=$(basename $gitf)
 	site=${site/.yml/}
+	[ "$site" == "$CURSITE" ] && continue
 	localf="$HOME/public_html/$site/site_files/config/config.yml"
 
 	if [ $(changed "$gitf" "$localf") ]; then
@@ -44,10 +44,10 @@ done
 
 # Get list with all (except current)
 for gitf in $(ls -1 "$HANDYANTCONFIGDIR"/*.yml); do
-echo alllist
-	[ "$site" == "$CURSITE" ] && continue
 	site=$(basename $gitf)
 	site=${site/.yml/}
+	[ "$site" == "$CURSITE" ] && continue
+echo alllist
 	localf="$HOME/public_html/$site/site_files/config/config.yml"
 	alllist=(${alllist[@]-} "$site")
 done
