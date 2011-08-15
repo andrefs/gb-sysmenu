@@ -22,7 +22,7 @@ export CURSITE=$("$GBSYSMENUPATH/gb.a_location")
 
 # Config files repository directory
 if [ -z "$HANDYANTCONFIGDIR" ]; then
-	HANDYANTCONFIGDIR='/home/hokage/gb-instancies'
+	HANDYANTCONFIGDIR='/home/hokage/gb-instances'
 fi
 
 # Pull new commits
