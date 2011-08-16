@@ -31,7 +31,7 @@ sub copy_overrides {
 
 sub generate_saas {
 	my $sass_folder = "$themes_root/Instancies/$client_theme";
-	mkdir "$site_files/public/stylesheets/";
+	print qx{mkdir -p "$site_files/public/stylesheets/"};
 	foreach my $sass (<$sass_folder/*.sass>){
 		next if $sass eq 'config.sass';
 		my $css = basename($sass);
@@ -44,6 +44,7 @@ sub generate_saas {
 sub generate_config {
 	my ($repi_client_config, $rept_client_config, $rept_generic_config) = @_;
 	my $local_conf = "$site_files/config/config.yml";
+	print qx{mkdir -p "$site_files/public/stylesheets/"};
 	print qx{merge_yaml.pl '$repi_client_config' '$rept_client_config' '$rept_generic_config' > '$local_conf'};
 	add_railsenv($local_conf);
 }
