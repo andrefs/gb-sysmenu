@@ -2,6 +2,7 @@
 use strict; use warnings;
 use File::Basename;
 use YAML::XS;
+use Data::Dumper;
 
 my ($repi_client_config, $themes_root, $site_files) = @ARGV;
 
@@ -48,6 +49,7 @@ sub generate_config {
 sub get_theme_from_config {
 	my $config_file = shift;
 	my $config = YAML::XS::LoadFile($config_file);
-	$config->{theme};
+	print Dumper $config;
+	return $config->{theme};
 }
 
