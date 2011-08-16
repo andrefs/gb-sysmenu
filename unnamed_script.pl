@@ -59,7 +59,7 @@ sub generate_saas {
 	my $stylesheets = $info->{stylesheets};
 	print qx{mkdir -p "$stylesheets"};
 	foreach my $sass (<$sass_folder/*.sass>){
-		next if $sass eq 'config.sass';
+		next if $sass =~ /config\.sass$/;
 		my $css = basename($sass);
 		$css =~ s/sass$/css/;
 		$css = "$stylesheets/$css";
