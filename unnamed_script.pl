@@ -45,7 +45,18 @@ sub generate_config {
 	my ($repi_client_config, $rept_client_config, $rept_generic_config) = @_;
 	my $local_conf = "$site_files/config/config.yml";
 	print qx{merge_yaml.pl '$repi_client_config' '$rept_client_config' '$rept_generic_config' > '$local_conf'};
+	add_railsenv($local_conf);
 }
+
+sub add_railsenv {
+	my $config_file = shift;
+	my $config = YAML::XS::LoadFile($config_file);
+	my $rails_env;
+	defined($ENV{'RAILS_ENV'})? $rails_env = $ENV{'RAILS_ENV'} : $rails_env = 'development';
+	my $newconf = { $rails_env => $config };
+	YAML::XS::DumpFile($config_file,$newconf);
+}
+	
 
 sub get_theme_from_config {
 	my $config_file = shift;
