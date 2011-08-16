@@ -8,9 +8,9 @@ my ($repi_client_config, $themes_root, $site_files) = @ARGV;
 
 $themes_root =~ s!/$!!;
 $site_files =~ s!/$!!;
-my $client_theme 		= get_theme_from_config($repi_client_config);
+my $client_theme 		= get_theme_from_config($repi_client_config) or die "Could not find 'theme' inside '$repi_client_config'\n";
 my $rept_client_config 	= "$themes_root/Instances/".$client_theme."/config.yml";
-my $generic_theme 		= get_theme_from_config($rept_client_config);
+my $generic_theme 		= get_theme_from_config($rept_client_config) or die "Could not find 'theme' inside '$rept_client_config\n'";
 my $rept_generic_config = "$themes_root/Generic/".$generic_theme."/config.yml";
 
 my $info = {
