@@ -1,5 +1,5 @@
 #!/bin/bash
-# Restore vh from archive file passed as arguntes
+# Restore vh from archive file passed as argument
 
 # Check for arguments
 if [ -z "$1" ]; then

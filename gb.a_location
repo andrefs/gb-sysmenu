@@ -1,0 +1,8 @@
+#!/bin/bash
+CURPATH=$(pwd)
+if [ $(echo $CURPATH | grep -P "^$HOME/public_html/") ]; then
+	SITE=$(echo $CURPATH | perl -plne "s/^.*?public_html\///" | perl -plne "s/\/.*$//")
+	echo $SITE
+	exit 0
+fi
+exit 1

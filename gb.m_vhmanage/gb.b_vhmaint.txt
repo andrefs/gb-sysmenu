@@ -1,0 +1,4 @@
+# title: Add/remove maintenance warning to vh
+# os: all
+Replaces a given vh site with a "site under maintenance" static warning.
+

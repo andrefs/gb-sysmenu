@@ -280,7 +280,7 @@ sed "s/iface lo inet loopback/iface lo inet loopback\nre-up iptables-restore < \
 
 sudo aptitude update -y
 sudo aptitude safe-upgrade -y
-sudo aptitude install subversion subversion-tools git-core w3m  mlocate sqlite3 screen gcc build-essential htophtop  -y
+sudo aptitude install subversion subversion-tools git-core w3m  mlocate sqlite3 screen gcc build-essential htop -y
 
 echo -e "\nalias si.b_rails=\"si.b_rails2.3.8_pass && exec bash\"\n" >>  /home/$UN/.bashrc
 SIEND1

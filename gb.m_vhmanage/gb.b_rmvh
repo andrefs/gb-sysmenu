@@ -1,5 +1,5 @@
 #!/bin/bash
-# Create virtual hosts on Apache
+# Completely remove vh
 
 set -e
 

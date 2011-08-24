@@ -1,0 +1,3 @@
+# title: Server initial configurations
+# os: all
+Initial configuration of SSH, Git, Rails, etc

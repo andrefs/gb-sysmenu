@@ -1,0 +1,3 @@
+# title: Install an AMP server
+#os: linux
+Installs Apache2, MySQL, PHP and phpMyAdmin and sets some security rules

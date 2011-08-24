@@ -1,0 +1,3 @@
+# title: Add new virtual host
+# os: linux
+Adds a new virtual host, optionally clonning a github repository, creating a MySQL database and writing user and pass on config.yml, installing ruby gems.
