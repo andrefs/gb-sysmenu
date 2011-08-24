@@ -1,0 +1,3 @@
+# title: Completely remove vh
+# os: all
+Remove app directory, apache configuration file, ssl_keys (if any) and backups. Use with caution!

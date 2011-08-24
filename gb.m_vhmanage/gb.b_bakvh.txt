@@ -1,0 +1,3 @@
+# title: Create backup archive for a VH
+# os: all
+Presents a list of enabled virtual hosts, and backs up the system and assets folder and the Database for the chosen vh. Resulting archive is stored in ~/backups/

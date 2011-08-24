@@ -1,0 +1,46 @@
+#!/bin/bash
+# Completely remove vh
+
+set -e
+
+echo "You currently have this sites on your sites-available directory:"
+ls -1 /etc/apache2/sites-available | nl | perl -plne 's/\s+(\d+)\s+/ [$1] /g'
+
+read -p "Please enter the number of the site you want to remove: [0 to quit] " -e NUMBER
+while ! [[ "$NUMBER" =~ ^[0-9]+$ ]]; do
+	echo "$NUMBER is not a valid number."
+	ls -1 /etc/apache2/sites-available | nl | perl -plne 's/\s+(\d+)\s+/ [$1] /g'
+	read -p "Please enter the number of the site you want to remove: [0 to quit] " -e NUMBER
+done
+if [ "$NUMBER" == "0" ]; then
+	echo "Operation canceled."
+	exit 0
+fi
+SITE=$(ls -1 /etc/apache2/sites-available | head -$NUMBER | tail -1)
+
+echo "This will delete site $SITE and all its data (ssl_keys and backups too)."
+read -p "Are you sure you want to proceed? [y/N] "
+if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
+	echo "sudo a2dissite $SITE"
+	sudo a2dissite $SITE
+	sudo rm -rf /etc/apache2/sites-available/$SITE
+	sudo rm -rf /etc/apache2/sites-enabled/$SITE
+	sudo rm -rf $HOME/public_html/$SITE
+	sudo rm -rf $HOME/ssl_keys/$SITE
+	sudo rm -rf $HOME/backups/$SITE 
+	echo "Site removed."
+	read -p "Do you also want to remove the database? [y/N] "
+	if [[ "$REPLY" == "y" || "$REPLY" == "Y" ]]; then
+		DBNAME=`echo $SITE | sed 's/[^a-zA-Z0-9_]/_/g' | head -c 60`
+		DBUSER="`echo ${DBNAME} | head -c 14`_u"
+		echo "Connecting to MySQL to remove database and user. MySQL root password will be needed."
+		mysql -u root -p <<MSEND
+DROP USER '$DBUSER'@'localhost';
+DROP DATABASE IF EXISTS $DBNAME;
+MSEND
+	echo "Database removed."
+	echo "Restarting apache."
+	sudo /etc/init.d/apache2 restart
+	fi
+fi
+		

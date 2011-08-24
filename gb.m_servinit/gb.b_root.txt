@@ -1,0 +1,3 @@
+# title: Initial Ubuntu Server configuration
+# os: linux
+Deactivates root account, creates normal user, gives sudo permition, sets up ssh and iptables and installs utils-menu

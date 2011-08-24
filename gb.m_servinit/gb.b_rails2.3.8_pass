@@ -1,0 +1,68 @@
+#!/bin/bash
+
+
+echo "You will need the last version of rubygems. You can find it 
+at http://rubyforge.org/projects/rubygems/ (shoud be a tgz file)"
+read -p "Please provide a link to the last rubygems version [http://rubyforge.org/frs/download.php/74140/rubygems-1.5.0.tgz] " -e GEMSLINK
+if [ -z "$GEMSLINK" ]; then
+	GEMSLINK="http://rubyforge.org/frs/download.php/74140/rubygems-1.5.0.tgz"
+fi
+
+sudo aptitude -y install vim-rails build-essential
+sudo aptitude -y install ruby1.8-dev ruby1.8 ri1.8 rdoc1.8 irb1.8 libreadline-ruby1.8 libruby1.8 libopenssl-ruby sqlite3 libsqlite3-ruby1.8
+sudo aptitude -y install imagemagick libmagick9-dev
+sudo aptitude -y install libxslt1-dev libxml2-dev
+
+sudo aptitude install -y libmysql-ruby1.8 mysql-client libmysqlclient16-dev
+
+sudo ln -s /usr/bin/ruby1.8 /usr/bin/ruby
+sudo ln -s /usr/bin/ri1.8 /usr/bin/ri
+sudo ln -s /usr/bin/rdoc1.8 /usr/bin/rdoc
+sudo ln -s /usr/bin/irb1.8 /usr/bin/irb
+
+wget $GEMSLINK
+tar xzvf $(basename $GEMSLINK)
+cd $(basename $GEMSLINK .tgz)
+sudo ruby setup.rb
+cd ..
+rm -rf $(basename $GEMSLINK .tgz)
+rm -rf $(basename $GEMSLINK)
+
+sudo ln -s /usr/bin/gem1.8 /usr/bin/gem
+sudo gem update
+sudo gem update --system
+
+sudo gem install --no-rdoc --no-ri rails --version '2.3.8'
+sudo gem install --no-rdoc --no-ri bundler 
+
+## Passenger
+
+sudo gem install  --no-rdoc --no-ri passenger
+sudo aptitude install -y libcurl4-openssl-dev
+sudo aptitude install -y libssl-dev
+sudo aptitude install -y apache2-prefork-dev
+sudo aptitude install -y libapr1-dev
+sudo aptitude install -y libaprutil1-dev
+
+sudo passenger-install-apache2-module
+
+cd /usr/lib/ruby/gems/1.8/gems/passenger-*
+if [ $? -ne 0 ]; then
+	echo "Passenger folder not found!"
+	exit 0;
+fi
+PASSFOLD=`pwd`
+cd -
+
+echo "
+#configs para o mod_rails
+LoadModule passenger_module $PASSFOLD/ext/apache2/mod_passenger.so
+PassengerRoot $PASSFOLD
+PassengerRuby /usr/bin/ruby1.8
+" | sudo tee  -a /etc/apache2/apache2.conf > /dev/null
+
+echo "export RAILS_ENV=production" >> $HOME/.bashrc
+
+sudo a2enmod rewrite
+sudo /etc/init.d/apache2 restart
+#sudo /usr/sbin/apache2ctl graceful
