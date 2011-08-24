@@ -48,7 +48,7 @@ while [ "$CHOICE" == "NO" ]; do
 		echo -e "${sitelist[@]}" |\
 			 nl |\
 			 perl -plne 's/^\s+(\d+)\s+/ [$1]\t/g' |\
-			 cat - <(echo ""; echo "[M] Maintenance all"; echo "[U] Up all"; echo "[X] Cancel") |\
+			 cat - <(echo ""; echo "[M] All_maintenance"; echo "[U] All_up"; echo "[X] Cancel") |\
 			 column -t
 	fi
 	read -p "Choose a site to toggle its maintenance status: " -e NUMBER
@@ -65,24 +65,24 @@ while [ "$CHOICE" == "NO" ]; do
 			SITE=$(ls -1 "$HOME/public_html" | grep -v "$CURSITE" | head -$NUMBER | tail -1)
 		fi
 		if [ -e "$HOME/public_html/$SITE/site_files/public/index.html" ]; then
-			#rm "$HOME/public_html/$SITE/site_files/public/index.html"
+			rm "$HOME/public_html/$SITE/site_files/public/index.html"
 			echo "Removed index.html from $SITE. Rails app should be working now."
 		else
-			#cp "$GBSYSMENUPATH/vhmaint.html" "$HOME/public_html/$SITE/site_files/public/index.html"
+			cp "$GBSYSMENUPATH/vhmaint.html" "$HOME/public_html/$SITE/site_files/public/index.html"
 			echo "Created index.html. 'Site under maintenace' page should be visible at $SITE."
 		fi
 		CHOICE='YES'
 		;;
 	M|m) # Put all sites under maintenance
 		for SITE in $(ls -1 "$HOME/public_html"); do
-			#cp "$GBSYSMENUPATH/vhmaint.html" "$HOME/public_html/$SITE/site_files/public/index.html"
+			cp "$GBSYSMENUPATH/vhmaint.html" "$HOME/public_html/$SITE/site_files/public/index.html"
 			echo "Created index.html. 'Site under maintenace' page should be visible at $SITE."
 		done
 		CHOICE='YES'
 		;;		
 	U|u) # Put all sites up (remove maintenance warning)
 		for SITE in $(ls -1 "$HOME/public_html"); do
-			#rm -f "$HOME/public_html/$SITE/site_files/public/index.html"
+			rm -f "$HOME/public_html/$SITE/site_files/public/index.html"
 			echo "Removed index.html from $SITE. Rails app should be working now."
 		done
 		CHOICE='YES'
@@ -94,10 +94,10 @@ while [ "$CHOICE" == "NO" ]; do
 		else
 			CURSITE=$("$GBSYSMENUPATH/gb.a_location")
 			if [ -e "$HOME/public_html/$CURSITE/site_files/public/index.html" ]; then
-				#rm "$HOME/public_html/$CURSITE/site_files/public/index.html"
+				rm "$HOME/public_html/$CURSITE/site_files/public/index.html"
 				echo "Removed index.html from $CURSITE. Rails app should be working now."
 			else
-				#cp "$GBSYSMENUPATH/vhmaint.html" "$HOME/public_html/$CURSITE/site_files/public/index.html"
+				cp "$GBSYSMENUPATH/vhmaint.html" "$HOME/public_html/$CURSITE/site_files/public/index.html"
 				echo "Created index.html. 'Site under maintenace' page should be visible at $CURSITE."
 			fi			
 			CHOICE='YES'
