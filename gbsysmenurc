@@ -1,0 +1,3 @@
+export GBSYSMENUPATH='/home/andrefs/Projects/groupbuddies/gb-sysmenu'
+export GBSITESDIR='/home/andrefs/public_html'
+PATH="$PATH:$GBSYSMENUPATH"
