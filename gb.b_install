@@ -15,6 +15,8 @@
 
 #########################
 
+set -e # Exit if any simple command fails
+
 if [[ $EUID -ne 0 ]]; then
 	echo "This script must be run as root!" 1>&2
 	exit 1
@@ -29,17 +31,31 @@ if [ -z "$GBINSTALLDIR" ]; then
 	GBINSTALLDIR="/opt/gb-sysmenu"
 fi
 
+echo
 echo "Creating directory '$GBINSTALLDIR'..."
 mkdir -p "$GBINSTALLDIR"
-echo "Cloning gb-sysmenu Git repository to '$GBINSTALLDIR'..."
-git clone git@github.com:andrefs/gb-sysmenu.git "$GBINSTALLDIR" 
-git checkout feature/install
-# git checkout <tagname>
 
+echo
+echo "Cloning gb-sysmenu Git repository to '$GBINSTALLDIR'..."
+git clone git://github.com/andrefs/gb-sysmenu.git "$GBINSTALLDIR" >/dev/null
+cd "$GBINSTALLDIR"
+git checkout feature/install
+
+git submodule init
+git submodule update
+git submodule foreach git checkout master
+git submodule foreach git pull
+
+# git checkout <tagname>
+cd -
+
+echo
 echo "Installing dirmenu..."
 chmod +x "$GBINSTALLDIR/dirmenu/dirmenu"
-"$GBINSTALLDIR/dirmenu/dirmenu -i"
+"$GBINSTALLDIR"/dirmenu/dirmenu -i
 
+echo
+echo "Installing gb-sysmenu..."
 cat << END > /tmp/gb-sysmenu
 #!/bin/bash
 export GBINSTALLDIR='$GBINSTALLDIR'
@@ -47,7 +63,11 @@ dirmenu \$GBINSTALLDIR
 END
 
 mv /tmp/gb-sysmenu /usr/local/bin/gb-sysmenu
+chmod +x /usr/local/bin/gb-sysmenu
 
+echo
+echo "Installation finished!"
+echo "Run 'gb-sysmenu' to try your brand new gb-sysmenu!"
 
 
 # if [ -e "$PWD"/.gb-sysmenu-repo-folder ]; then
