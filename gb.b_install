@@ -26,43 +26,48 @@ echo "This is the installer script for gb-sysmenu, a set of bash, perl, ruby, et
 echo "scripts to configure and manage a Linux server running Ruby on Rails apps"
 echo "You can find more information about it at http://github.com/andrefs/gb-sysmenu"
 echo
-#read -p "Where do you want to install gb-sysmenu? [/opt/gb-sysmenu] " -e GBINSTALLDIR
+
 if [ -z "$GBINSTALLDIR" ]; then
 	GBINSTALLDIR="/opt/gb-sysmenu"
 fi
 
-echo
-echo "Creating directory '$GBINSTALLDIR'..."
+if [ -z "$GBSITESDIR" ]; then
+	GBSITESDIR="~/public_html"
+fi
+
+echo "*** Creating directory '$GBINSTALLDIR'..."
 mkdir -p "$GBINSTALLDIR"
 
-echo
-echo "Cloning gb-sysmenu Git repository to '$GBINSTALLDIR'..."
+echo "*** Cloning gb-sysmenu Git repository to '$GBINSTALLDIR'..."
 git clone git://github.com/andrefs/gb-sysmenu.git "$GBINSTALLDIR" 2>/dev/null
 cd "$GBINSTALLDIR"
 git checkout feature/install
 
-git submodule init
-git submodule update
-git submodule foreach git checkout master
-git submodule foreach git pull
+git submodule init 2>/dev/null
+git submodule update 2>/dev/null
+git submodule foreach git checkout master 2>/dev/null
+git submodule foreach git pull 2>/dev/null
 
 # git checkout <tagname>
 cd -
 
-echo
-echo "Installing dirmenu..."
+echo "*** Installing dirmenu..."
 chmod +x "$GBINSTALLDIR/dirmenu/dirmenu"
 "$GBINSTALLDIR"/dirmenu/dirmenu -i
 
-echo
-echo "Installing gb-sysmenu..."
-cat << END > /tmp/gb-sysmenu
+echo "*** Installing gb-sysmenu..."
+cat << END > /usr/local/bin/gb-sysmenu
 #!/bin/bash
 export GBINSTALLDIR='$GBINSTALLDIR'
-dirmenu \$GBINSTALLDIR
+"\$GBINSTALLDIR"/gb.b_update
+dirmenu "\$GBINSTALLDIR"
 END
 
-mv /tmp/gb-sysmenu /usr/local/bin/gb-sysmenu
+echo "export GBSYSMENUPATH='$GBSYSMENUPATH'" >  "$GBINSTALLDIR/gbsysmenurc"
+echo "export GBSITESDIR='$GBSITESDIR'"       >> "$GBINSTALLDIR/gbsysmenurc"
+#echo "PATH=\"\$PATH:\$GBSYSMENUPATH/shortcuts\""       >> "$GBINSTALLDIR/gbsysmenurc"
+
+chmod +x "$GBINSTALLDIR"/gb.b_update
 chmod +x /usr/local/bin/gb-sysmenu
 
 echo
@@ -111,14 +116,3 @@ echo "Run 'gb-sysmenu' to try your brand new gb-sysmenu!"
 # else
 # 	echo "\$GBSYSMENUPATH is already defined [$GBSYSMENUPATH]"
 # fi
-# 
-# cd "$GBSYSMENUPATH"
-# echo "Updating gb-sysmenu..."
-# git pull
-# cd -
-# 
-# echo
-# echo "Finished installing/updating gb-sysmenu."
-# echo "To ensure that all environmental variables are ok, please run the following command: "
-# echo "exec '$BASH'"
-# exit 0

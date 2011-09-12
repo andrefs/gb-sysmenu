@@ -1,5 +1,21 @@
 Set of scripts to configure a fresh installed Ubuntu server (setting up user accounts, installing and configuring Apache, MySQL, PHP, Ruby, Rails, Passenger, and a bunch of other useful stuff as well).
 
+INSTALL
+
+You want to install gb-sysmenu? Run the following command and it will
+install itself for you (utils-menu will be installed in /opt/gb-sysmenu)
+
+   curl -L http://goo.gl/r6DEZ | sudo bash
+
+If you want to install gb-sysmenu in a different directory, it's easy!
+For example, to install gb-sysmenu at ~/.gb-sysmenu, just run:
+
+   curl -L http://goo.gl/r6DEZ | sudo GBINSTALLDIR=~/.gb-sysmenu bash
+  
+For more details about this program, visit http://github.com/andrefs/gb-sysmenu
+
+FEATURES
+
 Features include:
 - Initial configuration
 	- Deactivate root account
