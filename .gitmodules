@@ -1,0 +1,3 @@
+[submodule "dirmenu"]
+	path = dirmenu
+	url = git://github.com/andrefs/dirmenu.git

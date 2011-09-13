@@ -1,0 +1,3 @@
+# title: Manage virtual hosts and applications
+# os: all
+Gives access to operations such as adding and removing virtual hosts, put existing apps under maintenance, etc
