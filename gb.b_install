@@ -59,16 +59,16 @@ cat << END > /usr/local/bin/gb-sysmenu
 #!/bin/bash
 export GBINSTALLDIR='$GBINSTALLDIR'
 
-GBSMDIROWNER=\$(ls -ld "$GBINSTALLDIR" | awk '{ print \$3}')
-GBSMUSER=\$(echo \$USER)
-if [ "\$GBSMDIROWNER" != "\$GBSMSUSER" ]; then
-    echo "You need to own '$GBINSTALLDIR' to run utils-menu,"
-    echo "but the current owner is '\$GBSMDIROWNER'!"
+GBSM_DIR_OWNER=\$(ls -ld "\$GBINSTALLDIR" | awk '{ print \$3}')
+GBSM_USER=\$(echo \$USER)
+if [ "\$GBSM_DIR_OWNER" != "\$GBSM_USER" ]; then
+    echo "You need to own '\$GBINSTALLDIR' to run utils-menu,"
+    echo "but the current owner is '\$GBSM_DIR_OWNER'!"
     echo
-    echo "Do you want to change the ownership of '$GBINSTALLDIR'?"
+    echo "Do you want to change the ownership of '\$GBINSTALLDIR'?"
     read -p "(sudo password will be needed) [y/N] "
     if [[ "\$REPLY" == "y" || "\$REPLY" == "Y" ]]; then
-        sudo chown -R "\$GBSMUSER" "$GBINSTALLDIR"
+        sudo chown -R "\$GBSM_USER" "\$GBINSTALLDIR"
     else
         echo
         echo utils-menu aborted!
