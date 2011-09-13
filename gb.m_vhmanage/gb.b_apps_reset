@@ -1,7 +1,26 @@
 #!/bin/bash
 
+changed () {
+	gitf="$1"
+	localf="$2"
+	if ! [ -e "$localf" ]; then
+		return 1;
+		# echo "Local file '$localf' does not exist; copying..."
+		# chgdlist=(${chgdlist[@]-} $gitf)
+	elif [ "$gitf" -nt "$localf" ]; then
+		return 1;
+		# echo "Git version of '$site' is newer!"
+		# chgdlist=(${chgdlist[@]-} $gitf)
+	else
+		return 0;
+		# echo "No new changes to '$site'!"
+	fi
+}
+
+CURSITE=$("$GBSYSMENUPATH/gb.a_location")
+
 if [ -z "$HANDYANTCONFIGDIR" ]; then
-	HANDYANTCONFIGDIR='/home/naruto/HandyAnt-configs'
+	HANDYANTCONFIGDIR='/home/hokage/gb-instancies'
 fi
 
 cd "$HANDYANTCONFIGDIR"
@@ -12,17 +31,27 @@ for gitf in $(ls *.yml); do
 	site=$(basename $gitf)
 	site=${site/.yml/}
 	localf="$HOME/public_html/$site/site_files/config/config.yml"
-	
-	if ! [ -e "$localf" ]; then
-		echo "Local file '$localf' does not exist; copying..."
+
+	changed "$gitf" "$localf"
+	if [ $? -eq 1 ]; then
 		chgdlist=(${chgdlist[@]-} $gitf)
-	elif [ "$gitf" -nt "$localf" ]; then
-		echo "Git version of '$site' is newer!"
-		chgdlist=(${chgdlist[@]-} $gitf)
-	else
-		echo "No new changes to '$site'!"
 	fi
 done
-echo "${chgdlist[@]-}"
+# echo "${chgdlist[@]-}"
+
+echo "The config files for these sites have changed. Which one do you want to update? [Cancel] "
+printf "%s\n" "${chgdlist[@]-}" | cat <(echo "All") - | perl -plne 's/^.*\///' | nl -v0 | perl -plne 's/\s+(\d+)\s+/ [$1] /g'
+
+# ls -1 /etc/apache2/sites-available | nl | perl -plne 's/\s+(\d+)\s+/ [$1] /g'
+# read -p "Which one do you want to change? [0 to quit] " -e NUMBER
+# while ! [[ "$NUMBER" =~ ^[0-9]+$ ]]; do
+#     echo "$NUMBER is not a valid number."
+#     ls -1 /etc/apache2/sites-available | nl | perl -plne 's/\s+(\d+)\s+/ [$1] /g'
+#     read -p "Please enter the number of the site you want to change: [0 to quit] " -e NUMBER
+# done
+# if [ "$NUMBER" == "0" ]; then
+#     echo "Operation canceled."
+#     exit 0
+# fi
 
 

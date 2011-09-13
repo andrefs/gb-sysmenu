@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -e
+
+checkvar(){
+	vname="$1"
+	vval="$2"
+	if [ -z "$vval" ]; then
+		echo "It appears that you don't have the \$$vname environmental variable set."
+		echo "This script requires that \$$vname is defined in order to execute."
+		echo
+		echo "Please run the gb.b_install script or manually set \$$vname."
+		exit 1
+	fi	
+}
+
+checkvar "GBSYSMENUPATH" "$GBSYSMENUPATH"
+checkvar "GBSITESDIR" "$GBSITESDIR"
+
+exit 0
