@@ -5,12 +5,12 @@ INSTALL
 You want to install gb-sysmenu? Run the following command and it will
 install itself for you (utils-menu will be installed in /opt/gb-sysmenu)
 
-   curl -sL http://goo.gl/OjSSa | sudo bash
+   curl -sL http://goo.gl/m7zwy | sudo bash
 
 If you want to install gb-sysmenu in a different directory, it's easy!
 For example, to install gb-sysmenu at ~/.gb-sysmenu, just run:
 
-   curl -sL http://goo.gl/OjSSa | sudo GBINSTALLDIR=~/.gb-sysmenu bash
+   curl -sL http://goo.gl/m7zwy | sudo GBINSTALLDIR=~/.gb-sysmenu bash
   
 For more details about this program, visit http://github.com/andrefs/gb-sysmenu
 
