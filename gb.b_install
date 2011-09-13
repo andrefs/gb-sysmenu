@@ -52,13 +52,30 @@ git submodule foreach git pull 2>/dev/null
 cd -
 
 echo "*** Installing dirmenu..."
-chmod +x "$GBINSTALLDIR/dirmenu/dirmenu"
-"$GBINSTALLDIR"/dirmenu/dirmenu -i
+curl -L http://goo.gl/rRBCN | bash
 
 echo "*** Installing gb-sysmenu..."
 cat << END > /usr/local/bin/gb-sysmenu
 #!/bin/bash
 export GBINSTALLDIR='$GBINSTALLDIR'
+
+GBSMDIROWNER=\$(ls -ld "$GBINSTALLDIR" | awk '{ print \$3}')
+GBSMUSER=\$(echo \$USER)
+if [ "\$GBSMDIROWNER" != "\$GBSMSUSER" ]; then
+    echo "You need to own '$GBINSTALLDIR' to run utils-menu,"
+    echo "but the current owner is '\$GBSMDIROWNER'!"
+    echo
+    echo "Do you want to change the ownership of '$GBINSTALLDIR'?"
+    read -p "(sudo password will be needed) [y/N] "
+    if [[ "\$REPLY" == "y" || "\$REPLY" == "Y" ]]; then
+        sudo chown -R "\$GBSMUSER" "$GBINSTALLDIR"
+    else
+        echo
+        echo utils-menu aborted!
+        exit 1
+    fi
+fi
+
 "\$GBINSTALLDIR"/gb.b_update
 dirmenu "\$GBINSTALLDIR"
 END

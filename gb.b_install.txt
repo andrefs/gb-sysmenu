@@ -1,3 +1,0 @@
-# title: Install/update
-# os: linux
-Installs or updates gb-sysmenu
