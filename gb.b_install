@@ -32,7 +32,7 @@ mkdir -p "$GBINSTALLDIR"
 echo "*** Cloning gb-sysmenu Git repository to '$GBINSTALLDIR'..."
 git clone git://github.com/andrefs/gb-sysmenu.git "$GBINSTALLDIR" 2>/dev/null
 cd "$GBINSTALLDIR"
-#git checkout develop
+git checkout develop
 
 # git submodule init 2>/dev/null
 # git submodule update 2>/dev/null
