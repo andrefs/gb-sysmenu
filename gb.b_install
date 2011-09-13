@@ -1,63 +1,135 @@
 #!/bin/bash
 
-if [ -e "$PWD"/.gb-sysmenu-repo-folder ]; then
-	echo "Please enter the path to the local gb-sysmenu repository folder: [$PWD] "
-	read -e REPOPATH
-	if [ -z "$REPOPATH" ]; then
-		REPOPATH="$PWD"
-	fi
-elif [[ -n "$GBSYSMENUPATH" && -e "$GBSYSMENUPATH/.gb-sysmenu-repo-folder" ]]; then
-	echo "Current gb-sysmenu path is '$GBSYSMENUPATH'."
-	echo "Enter a new path, or leave empty to keep the current one: "
-	read -e REPOPATH
-	if [ -z "$REPOPATH" ]; then
-		REPOPATH="$GBSYSMENUPATH"
-	fi
-else
-	echo "Please enter the path to the local gb-sysmenu repository folder: "
-	read -e REPOPATH
-fi
-while [[ -z "$REPOPATH" || ! -d "$REPOPATH" || ! -e "$REPOPATH/.gb-sysmenu-repo-folder" ]]; do
-	echo "'$REPOPATH' does not appear to be the path to a gb-sysmenu local repository."
-	echo "Please enter a valid path: "
-	read -e REPOPATH
-done
-REPOPATH=${REPOPATH%/}
+# curl -L http://site.do.gb.b_install | sudo bash 
+# Ask for install dir [/opt/gb-sysmenu] -> $GBINSTALLDIR
+# checkout git repo to $GBINSTALLDIR
+# install $GBINSTALLDIR/dirmenu
 
-if [ -z "$GBSYSMENUPATH" ]; then
-	export GBSYSMENUPATH="$REPOPATH"
-	echo "Environmental variable '\$GBSYSMENUPATH' is not defined."
-	read -p "Do you want to add it to your .bashrc file? [Y/n] " 
-	if [[ "$REPLY" != "n" && "$REPLY" != "N" ]]; then
-		if [ -n "$(grep -P '\s*source.*gbsysmenurc\s*' "$HOME/.bashrc")" ]; then
-			grep -v -P '\s*source.*gbsysmenurc\s*' "$HOME/.bashrc" > "/tmp/$$.bashrc"
-			cp "/tmp/$$.bashrc" "$HOME/.bashrc"
-			rm "/tmp/$$.bashrc"
-		fi
-			echo "source '$REPOPATH/gbsysmenurc'" >> "$HOME/.bashrc"
-	fi
-else
-	echo "\$GBSYSMENUPATH is already defined [$GBSYSMENUPATH]"
+# echo to /usr/local/bin/gb-sysmenu:
+# #!/bin/bash
+# export GBINSTALLDIR='$GBINSTALLDIR'
+# dirmenu $GBINSTALLDIR
+
+# echo to ~/.bashrc
+# PATH=$PATH:$GBINSTALLDIR/shortcuts
+
+#########################
+
+set -e # Exit if any simple command fails
+
+if [[ $EUID -ne 0 ]]; then
+	echo "This script must be run as root!" 1>&2
+	exit 1
+fi
+
+echo "This is the installer script for gb-sysmenu, a set of bash, perl, ruby, etc"
+echo "scripts to configure and manage a Linux server running Ruby on Rails apps"
+echo "You can find more information about it at http://github.com/andrefs/gb-sysmenu"
+echo
+
+if [ -z "$GBINSTALLDIR" ]; then
+	GBINSTALLDIR="/opt/gb-sysmenu"
 fi
 
 if [ -z "$GBSITESDIR" ]; then
-	GBSITESDIR="$HOME/public_html"
-	mkdir -p "$GBSITESDIR"
+	GBSITESDIR="~/public_html"
 fi
 
-if [ ! -e $REPOPATH/gbsysmenurc ]; then
-	echo "export GBSYSMENUPATH='$GBSYSMENUPATH'" > "$REPOPATH/gbsysmenurc"
-	echo "export GBSITESDIR='$GBSITESDIR'" > "$REPOPATH/gbsysmenurc"
-	echo "PATH=\"\$PATH:\$GBSYSMENUPATH\"" >> "$REPOPATH/gbsysmenurc"
-fi
+echo "*** Creating directory '$GBINSTALLDIR'..."
+mkdir -p "$GBINSTALLDIR"
 
-cd "$GBSYSMENUPATH"
-echo "Updating gb-sysmenu..."
-git pull
+echo "*** Cloning gb-sysmenu Git repository to '$GBINSTALLDIR'..."
+git clone git://github.com/andrefs/gb-sysmenu.git "$GBINSTALLDIR" 2>/dev/null
+cd "$GBINSTALLDIR"
+git checkout feature/install
+
+git submodule init 2>/dev/null
+git submodule update 2>/dev/null
+git submodule foreach git checkout master 2>/dev/null
+git submodule foreach git pull 2>/dev/null
+
+# git checkout <tagname>
 cd -
 
+echo "*** Installing dirmenu..."
+curl -L http://goo.gl/rRBCN | bash
+
+echo "*** Installing gb-sysmenu..."
+cat << END > /usr/local/bin/gb-sysmenu
+#!/bin/bash
+export GBINSTALLDIR='$GBINSTALLDIR'
+
+GBSM_DIR_OWNER=\$(ls -ld "\$GBINSTALLDIR" | awk '{ print \$3}')
+GBSM_USER=\$(echo \$USER)
+if [ "\$GBSM_DIR_OWNER" != "\$GBSM_USER" ]; then
+    echo "You need to own '\$GBINSTALLDIR' to run utils-menu,"
+    echo "but the current owner is '\$GBSM_DIR_OWNER'!"
+    echo
+    echo "Do you want to change the ownership of '\$GBINSTALLDIR'?"
+    read -p "(sudo password will be needed) [y/N] "
+    if [[ "\$REPLY" == "y" || "\$REPLY" == "Y" ]]; then
+        sudo chown -R "\$GBSM_USER" "\$GBINSTALLDIR"
+    else
+        echo
+        echo utils-menu aborted!
+        exit 1
+    fi
+fi
+
+"\$GBINSTALLDIR"/gb.b_update
+dirmenu "\$GBINSTALLDIR"
+END
+
+echo "export GBSYSMENUPATH='$GBSYSMENUPATH'" >  "$GBINSTALLDIR/gbsysmenurc"
+echo "export GBSITESDIR='$GBSITESDIR'"       >> "$GBINSTALLDIR/gbsysmenurc"
+#echo "PATH=\"\$PATH:\$GBSYSMENUPATH/shortcuts\""       >> "$GBINSTALLDIR/gbsysmenurc"
+
+chmod +x "$GBINSTALLDIR"/gb.b_update
+chmod +x /usr/local/bin/gb-sysmenu
+
 echo
-echo "Finished installing/updating gb-sysmenu."
-echo "To ensure that all environmental variables are ok, please run the following command: "
-echo "exec '$BASH'"
-exit 0
+echo "Installation finished!"
+echo "Run 'gb-sysmenu' to try your brand new gb-sysmenu!"
+
+
+# if [ -e "$PWD"/.gb-sysmenu-repo-folder ]; then
+# 	echo "Please enter the path to the local gb-sysmenu repository folder: [$PWD] "
+# 	read -e REPOPATH
+# 	if [ -z "$REPOPATH" ]; then
+# 		REPOPATH="$PWD"
+# 	fi
+# elif [[ -n "$GBSYSMENUPATH" && -e "$GBSYSMENUPATH/.gb-sysmenu-repo-folder" ]]; then
+# 	echo "Current gb-sysmenu path is '$GBSYSMENUPATH'."
+# 	echo "Enter a new path, or leave empty to keep the current one: "
+# 	read -e REPOPATH
+# 	if [ -z "$REPOPATH" ]; then
+# 		REPOPATH="$GBSYSMENUPATH"
+# 	fi
+# else
+# 	echo "Please enter the path to the local gb-sysmenu repository folder: "
+# 	read -e REPOPATH
+# fi
+# while [[ -z "$REPOPATH" || ! -d "$REPOPATH" || ! -e "$REPOPATH/.gb-sysmenu-repo-folder" ]]; do
+# 	echo "'$REPOPATH' does not appear to be the path to a gb-sysmenu local repository."
+# 	echo "Please enter a valid path: "
+# 	read -e REPOPATH
+# done
+# REPOPATH=${REPOPATH%/}
+# 
+# if [ -z "$GBSYSMENUPATH" ]; then
+# 	export GBSYSMENUPATH="$REPOPATH"
+# 	echo "Environmental variable '\$GBSYSMENUPATH' is not defined."
+# 	read -p "Do you want to add it to your .bashrc file? [Y/n] " 
+# 	if [[ "$REPLY" != "n" && "$REPLY" != "N" ]]; then
+# 		if [ -n "$(grep -P '\s*source.*gbsysmenurc\s*' "$HOME/.bashrc")" ]; then
+# 			grep -v -P '\s*source.*gbsysmenurc\s*' "$HOME/.bashrc" > "/tmp/$$.bashrc"
+# 			cp "/tmp/$$.bashrc" "$HOME/.bashrc"
+# 			rm "/tmp/$$.bashrc"
+# 		fi
+# 			echo "source '$REPOPATH/gbsysmenurc'" >> "$HOME/.bashrc"
+# 	fi
+# 	echo "export GBSYSMENUPATH='$GBSYSMENUPATH'" > "$REPOPATH/gbsysmenurc"
+# 	echo "PATH=\"\$PATH:\$GBSYSMENUPATH\"" >> "$REPOPATH/gbsysmenurc"
+# else
+# 	echo "\$GBSYSMENUPATH is already defined [$GBSYSMENUPATH]"
+# fi
