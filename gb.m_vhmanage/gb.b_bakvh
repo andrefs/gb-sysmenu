@@ -74,7 +74,7 @@ fi
 TODAYDIR="$HOME/backups/$(date +%Y%m%d)"
 mkdir "$TODAYDIR"
 cd "$TODAYDIR"
-ln -s ../$SITE/$BAKFOLDER.tar .
+ln -s ../"$SITE"/"$BAKFOLDER".tar .
 cd
 
 exit 0
