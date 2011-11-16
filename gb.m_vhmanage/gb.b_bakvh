@@ -72,7 +72,7 @@ fi
 
 # Also create folder with date and put inside links to backups from this day
 TODAYDIR="$HOME/backups/$(date +%Y%m%d)"
-mkdir "$TODAYDIR"
+mkdir -p "$TODAYDIR"
 cd "$TODAYDIR"
 ln -s ../"$SITE"/"$BAKFOLDER".tar .
 cd
