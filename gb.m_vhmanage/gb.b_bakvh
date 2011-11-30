@@ -52,11 +52,19 @@ if [ -e $HOME/public_html/$SITE/site_files/assets ]; then
 	cd -
 fi
 
-# Create archive from site_files/assets
-if [ -e $HOME/public_html/$SITE/site_files/assets ]; then
-	echo "Copying and compressing $SITE/site_files/assets folder."
+# Create archive from site_files/vendor
+if [ -e $HOME/public_html/$SITE/site_files/vendor ]; then
+	echo "Copying and compressing $SITE/site_files/vendor folder."
 	cd "site_files"
-	tar cvzf $BAKFOLDER/assets.tar.gz assets
+	tar cvzf $BAKFOLDER/vendor.tar.gz vendor
+	cd -
+fi
+
+# Create archive from site_files/public
+if [ -e $HOME/public_html/$SITE/site_files/public ]; then
+	echo "Copying and compressing $SITE/site_files/public folder."
+	cd "site_files"
+	tar cvzf $BAKFOLDER/public.tar.gz public
 	cd -
 fi
 

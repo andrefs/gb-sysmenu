@@ -62,6 +62,20 @@ if [ -e $BAKFOLDER/system.tar.gz ]; then
 	tar -C $HOME/public_html/$SITE/site_files/system xvzf $BAKFOLDER/system.tar.gz
 fi
 
+# Restore site_files/vendor
+if [ -e $BAKFOLDER/vendor.tar.gz ]; then
+	echo "Restoring $SITE/site_files/vendor folder."
+	rm -rf $HOME/public_html/$SITE/site_files/vendor
+	tar -C $HOME/public_html/$SITE/site_files/vendor xvzf $BAKFOLDER/vendor.tar.gz
+fi
+
+# Restore site_files/public
+if [ -e $BAKFOLDER/public.tar.gz ]; then
+	echo "Restoring $SITE/site_files/public folder."
+	rm -rf $HOME/public_html/$SITE/site_files/public
+	tar -C $HOME/public_html/$SITE/site_files/public xvzf $BAKFOLDER/public.tar.gz
+fi
+
 rm -rf $BAKFOLDER
 mv $BAKFOLDER.tar $HOME/backups/$SITE/
 echo "Restore completed."
