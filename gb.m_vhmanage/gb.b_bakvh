@@ -30,6 +30,7 @@ fi
 mkdir -p $HOME/backups/$SITE 
 cd $HOME/backups/$SITE 
 BAKFOLDER=$HOME/backups/$SITE/$SITE.bak.$(date +%Y%m%d_%H%M)
+BAKFILE=$SITE.bak.$(date +%Y%m%d_%H%M)
 mkdir -p "$BAKFOLDER"
 
 # Dump database to .sql.gz file
@@ -82,7 +83,7 @@ fi
 TODAYDIR="$HOME/backups/$(date +%Y%m%d)"
 mkdir -p "$TODAYDIR"
 cd "$TODAYDIR"
-ln -s ../"$SITE"/"$BAKFOLDER".tar .
+ln -s ../"$SITE"/"$BAKFILE".tar .
 cd
 
 exit 0
