@@ -122,7 +122,7 @@ cp /root/.bashrc /root/.bashrc.bak
 cp /etc/bash.bashrc /etc/bash.bashrc.bak
 
 # enable programmable completion features
-echo -e "\n\n# enable programmable completion features\nif [ -f /etc/bash_completion ] && ! shopt -oq posix; then\n    . /etc/bash_completion\nfi\n" >> /root/.bashrc.bak
+echo -e "\n\n# enable programmable completion features\nif [ -f /etc/bash_completion ] && ! shopt -oq posix; then\n    . /etc/bash_completion\nfi\n" >> /root/.bashrc
 
 # enable bash completion in interactive shells
 echo -e "\n\n# enable bash completion in interactive shells\nif [ -f /etc/bash_completion ] && ! shopt -oq posix; then\n    . /etc/bash_completion\nfi\n" >> /etc/bash.bashrc
