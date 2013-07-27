@@ -1,6 +1,18 @@
 #!/bin/bash
 
 
+echo "
+This script installs RoR and Passenger.
+"
+
+read -p "Do you wish to proceed? [Y/n] " -e PROC
+if [[ "$PROC" == "n" || "$PROC" == "N" ]]; then
+	echo -e "\nScript execution canceled."
+	exit 1
+fi
+
+
+
 echo "You will need the last version of rubygems. You can find it 
 at http://rubyforge.org/projects/rubygems/ (shoud be a tgz file)"
 read -p "Please provide a link to the last rubygems version [http://rubyforge.org/frs/download.php/74140/rubygems-1.5.0.tgz] " -e GEMSLINK
@@ -66,3 +78,7 @@ echo "export RAILS_ENV=production" >> $HOME/.bashrc
 sudo a2enmod rewrite
 sudo /etc/init.d/apache2 restart
 #sudo /usr/sbin/apache2ctl graceful
+
+echo -e "
+Done. Ruby on Rails is now running on your server.
+"
