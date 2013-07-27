@@ -49,7 +49,7 @@ sudo gem install --no-rdoc --no-ri bundler
 
 ## Passenger
 
-sudo gem install  --no-rdoc --no-ri passenger
+sudo gem install  --no-rdoc --no-ri passenger --version '3.0.2'
 sudo aptitude install -y libcurl4-openssl-dev
 sudo aptitude install -y libssl-dev
 sudo aptitude install -y apache2-prefork-dev
